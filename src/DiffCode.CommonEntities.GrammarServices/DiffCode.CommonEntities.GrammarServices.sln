@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiffCode.CommonEntities.GrammarServices", "DiffCode.CommonEntities.GrammarServices.csproj", "{4724C137-D858-440B-8250-46F005511EF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiffCode.CommonEntities", "..\..\..\DiffCode.CommonEntities\src\DiffCode.CommonEntities\DiffCode.CommonEntities\DiffCode.CommonEntities.csproj", "{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4724C137-D858-440B-8250-46F005511EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4724C137-D858-440B-8250-46F005511EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4724C137-D858-440B-8250-46F005511EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4724C137-D858-440B-8250-46F005511EF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13476A54-4F4D-4FF8-965A-EB1F3869274E}
+	EndGlobalSection
+EndGlobal

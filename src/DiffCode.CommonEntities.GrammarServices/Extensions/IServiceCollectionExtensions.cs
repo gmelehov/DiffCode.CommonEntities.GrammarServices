@@ -1,0 +1,364 @@
+﻿using DiffCode.CommonEntities.Abstractions;
+using DiffCode.CommonEntities.Extensions;
+using DiffCode.CommonEntities.Grammars;
+using DiffCode.CommonEntities.GrammarServices.Impl;
+using Microsoft.Extensions.DependencyInjection;
+using static DiffCode.CommonEntities.Abstractions.Case;
+
+
+namespace DiffCode.CommonEntities.GrammarServices.Extensions;
+
+public static class IServiceCollectionExtensions
+{
+
+
+  /// <summary>
+  /// Добавляет грамматики для существительных и прилагательных, используемых
+  /// в названиях должностей, сторон-подписантов, оснований полномочий подписантов
+  /// и названий организационно-правовых форм.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddPartiesPositionsLegalsGrammars(this IServiceCollection scoll) =>
+    scoll
+
+    .AddKeyedScoped<BaseGrammar>(1, (_, _) => new MAdj("ый", NOM("ый"), GEN("ого"), DAT("ому"), ACC("ого"), INS("ым"), LOC("ом")))
+    .AddKeyedScoped<BaseGrammar>(2, (_, _) => new MNounS("ый", true, NOM("ый"), GEN("ого"), DAT("ому"), ACC("ого"), INS("ым"), LOC("ом")))
+    .AddKeyedScoped<BaseGrammar>(3, (_, _) => new MAdj("ий", NOM("ий"), GEN("ого"), DAT("ому"), ACC("ого"), INS("им"), LOC("ом")))
+    .AddKeyedScoped<BaseGrammar>(4, (_, _) => new MNounS("ий", true, NOM("ий"), GEN("ого"), DAT("ему"), ACC("его"), INS("им"), LOC("ем")))
+    .AddKeyedScoped<BaseGrammar>(5, (_, _) => new MAdj("[ш|щ]ий", NOM("ий"), GEN("его"), DAT("ему"), ACC("его"), INS("им"), LOC("ем")))
+    .AddKeyedScoped<BaseGrammar>(6, (_, _) => new FAdj("ая", NOM("ая"), GEN("ей"), DAT("ей"), ACC("ую"), INS("ей"), LOC("ей")))
+    .AddKeyedScoped<BaseGrammar>(7, (_, _) => new NAdj("ое", NOM("ое"), GEN("ого"), DAT("ому"), ACC("ое"), INS("ым"), LOC("ом")))
+    .AddKeyedScoped<BaseGrammar>(8, (_, _) => new NAdj("кое", NOM("ое"), GEN("ого"), DAT("ому"), ACC("ое"), INS("им"), LOC("ом")))
+    .AddKeyedScoped<BaseGrammar>(9, (_, _) => new MNounS("", true, NOM(""), GEN("а"), DAT("у"), ACC("а"), INS("ом"), LOC("е")))
+    .AddKeyedScoped<BaseGrammar>(10, (_, _) => new MNounS("ь", true, NOM("ь"), GEN("я"), DAT("ю"), ACC("я"), INS("ем"), LOC("е")))
+    .AddKeyedScoped<BaseGrammar>(11, (_, _) => new MNounS("й", true, NOM("й"), GEN("я"), DAT("ю"), ACC("я"), INS("им"), LOC("ем")))
+    .AddKeyedScoped<BaseGrammar>(12, (_, _) => new MNounS("", false, NOM(""), GEN("а"), DAT("у"), ACC(""), INS("ом"), LOC("е")))
+    .AddKeyedScoped<BaseGrammar>(13, (_, _) => new NNounS("о", false, NOM("о"), GEN("а"), DAT("у"), ACC("о"), INS("ом"), LOC("е")))
+    .AddKeyedScoped<BaseGrammar>(14, (_, _) => new MNounS("продавец", true, NOM("ец"), GEN("ца"), DAT("цу"), ACC("ца"), INS("цом"), LOC("це")))
+    .AddKeyedScoped<BaseGrammar>(15, (_, _) => new MNounS("ец", true, NOM("ец"), GEN("ца"), DAT("цу"), ACC("ца"), INS("цем"), LOC("це")))
+    .AddKeyedScoped<BaseGrammar>(16, (_, _) => new FNounS("ь", false, NOM("ь"), GEN("и"), DAT("и"), ACC("ь"), INS("ью"), LOC("и")))
+    .AddKeyedScoped<BaseGrammar>(17, (_, _) => new FNounS("а", true, NOM("а"), GEN("ы"), DAT("е"), ACC("у"), INS("ой"), LOC("е")))
+    .AddKeyedScoped<BaseGrammar>(18, (_, _) => new FNounS("ия", false, NOM("ия"), GEN("ии"), DAT("ии"), ACC("ию"), INS("ией"), LOC("ии")))
+    .AddKeyedScoped<BaseGrammar>(19, (_, _) => new NNounS("во", false, NOM("о"), GEN("а"), DAT("у"), ACC("о"), INS("ом"), LOC("е")))
+    .AddKeyedScoped<BaseGrammar>(20, (_, _) => new NNounS("ие", false, NOM("е"), GEN("я"), DAT("ю"), ACC("е"), INS("ем"), LOC("и")))
+
+
+    .AddKeyedScoped("доверительный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("финансовый", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("управляющая", (sp, _) => sp.GetBaseGrammar(6, _))
+    .AddKeyedScoped("административный", (sp, _) => sp.GetBaseGrammar(1, _))
+
+    .AddKeyedScoped("генеральный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("главный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("доверенное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("исполнительный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("коммерческий", (sp, _) => sp.GetBaseGrammar(3, _))
+    .AddKeyedScoped("неформальный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("первый", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("старший", (sp, _) => sp.GetBaseGrammar(5, _))
+    .AddKeyedScoped("управляющий", (sp, _) => sp.GetBaseGrammar(5, _))
+    .AddKeyedScoped("технический", (sp, _) => sp.GetBaseGrammar(3, _))
+
+    .AddKeyedScoped("директор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("заведующий", (sp, _) => sp.GetBaseGrammar(4, _))
+    .AddKeyedScoped("заместитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("инженер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("бухгалтер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("конструктор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("менеджер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("начальник", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("партнер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("председатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("президент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("вице-президент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("редактор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("руководитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("собственник", (sp, _) => sp.GetBaseGrammar(9, _))
+
+    .AddKeyedScoped("устав", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("приказ", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("доверенность", (sp, _) => sp.GetBaseGrammar(16, _))
+    .AddKeyedScoped("распоряжение", (sp, _) => sp.GetBaseGrammar(20, _))
+
+    .AddKeyedScoped("автор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("агент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("арендатор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("арендодатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("бригада", (sp, _) => sp.GetBaseGrammar(17, _))
+    .AddKeyedScoped("гарант", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("даритель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("дилер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("доверитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("должник", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("дольщик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("жертвователь", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("задаткодатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("задаткополучатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("заемщик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("заимодавец", (sp, _) => sp.GetBaseGrammar(15, _))
+    .AddKeyedScoped("заказчик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("залогодатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("залогополучатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("застройщик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("инвестор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("исполнитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("клиент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("комиссионер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("комитент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("компания", (sp, _) => sp.GetBaseGrammar(18, _))
+    .AddKeyedScoped("контрагент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("кредитор", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("лизингодатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("лизингополучатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("лицензиар", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("лицензиат", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("лицо", (sp, _) => sp.GetBaseGrammar(13, _))
+    .AddKeyedScoped("одаряемый", (sp, _) => sp.GetBaseGrammar(2, _))
+    .AddKeyedScoped("пассажир", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("перевозчик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("плательщик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("поверенный", (sp, _) => sp.GetBaseGrammar(2, _))
+    .AddKeyedScoped("подрядчик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("поклажедатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("покупатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("получатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("пользователь", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("поручитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("работник", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("работодатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("ссудодатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("ссудополучатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("субагент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("субкомиссионер", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("судовладелец", (sp, _) => sp.GetBaseGrammar(15, _))
+    .AddKeyedScoped("организация", (sp, _) => sp.GetBaseGrammar(18, _))
+    .AddKeyedScoped("ученик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("учредитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("фрахтователь", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("хранитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("цедент", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("цессионарий", (sp, _) => sp.GetBaseGrammar(11, _))
+    .AddKeyedScoped("экспедитор", (sp, _) => sp.GetBaseGrammar(9, _))
+
+    .AddKeyedScoped("полное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("акционерное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("унитарное", (sp, _) => sp.GetBaseGrammar(7, _))
+
+    .AddKeyedScoped("производственный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("хозяйственный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("индивидуальный", (sp, _) => sp.GetBaseGrammar(1, _))
+    .AddKeyedScoped("простое", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("инвестиционное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("некоммерческое", (sp, _) => sp.GetBaseGrammar(8, _))
+    .AddKeyedScoped("публичное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("непубличное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("федеральное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("государственное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("муниципальное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("бюджетное", (sp, _) => sp.GetBaseGrammar(7, _))
+    .AddKeyedScoped("областное", (sp, _) => sp.GetBaseGrammar(7, _))
+
+    .AddKeyedScoped("общество", (sp, _) => sp.GetBaseGrammar(19, _))
+    .AddKeyedScoped("товарищество", (sp, _) => sp.GetBaseGrammar(19, _))
+    .AddKeyedScoped("предприятие", (sp, _) => sp.GetBaseGrammar(20, _))
+    .AddKeyedScoped("кооператив", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("предприниматель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("партнерство", (sp, _) => sp.GetBaseGrammar(19, _))
+    .AddKeyedScoped("учреждение", (sp, _) => sp.GetBaseGrammar(20, _))
+
+    ;
+
+
+
+  /// <summary>
+  /// Добавляет грамматики для существительных и прилагательных, используемых
+  /// в названиях единиц измерения.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddUnitsGrammars(this IServiceCollection scoll) =>
+    scoll
+    .AddKeyedScoped<BaseGrammar[]>("units",
+      (sp, _) =>
+      [
+        new MNounS("рубль", NOM("рубль"), GEN("рубля"), DAT("рублю"), ACC("рубль"), INS("рублём"), LOC("рубле")),
+        new MNounP("рубль", NOM("рублей"), GEN("рублей"), DAT("рублям"), ACC("рублей"), INS("рублями"), LOC("рублях")),
+        new MNounPSpec("рубль", NOM("рубля"), GEN("рублей"), DAT("рублям"), ACC("рубля"), INS("рублями"), LOC("рублях")),
+
+        new FNounS("копейка", NOM("копейка"), GEN("копейки"), DAT("копейке"), ACC("копейка"), INS("копейкой"), LOC("копейке")),
+        new FNounP("копейка", NOM("копеек"), GEN("копеек"), DAT("копейкам"), ACC("копеек"), INS("копейками"), LOC("копейках")),
+        new FNounPSpec("копейка", NOM("копейки"), GEN("копеек"), DAT("копейкам"), ACC("копейки"), INS("копейками"), LOC("копейках")),
+
+        new MNounS("месяц", NOM("месяц"), GEN("месяца"), DAT("месяцу"), ACC("месяц"), INS("месяцем"), LOC("месяце")),
+        new MNounP("месяц", NOM("месяцев"), GEN("месяцев"), DAT("месяцам"), ACC("месяцев"), INS("месяцами"), LOC("месяцах")),
+        new MNounPSpec("месяц", NOM("месяца"), GEN("месяцев"), DAT("месяцам"), ACC("месяца"), INS("месяцами"), LOC("месяцах")),
+
+        new MNounS("час", NOM("час"), GEN("часа"), DAT("часу"), ACC("час"), INS("часом"), LOC("часе")),
+        new MNounP("час", NOM("часов"), GEN("часов"), DAT("часам"), ACC("часов"), INS("часами"), LOC("часах")),
+        new MNounPSpec("час", NOM("часа"), GEN("часов"), DAT("часам"), ACC("часа"), INS("часами"), LOC("часах")),
+
+        new FNounS("минута", NOM("минута"), GEN("минуты"), DAT("минуте"), ACC("минута"), INS("минутой"), LOC("минуте")),
+        new FNounP("минута", NOM("минут"), GEN("минут"), DAT("минутам"), ACC("минут"), INS("минутами"), LOC("минутах")),
+        new FNounPSpec("минута", NOM("минуты"), GEN("минут"), DAT("минутам"), ACC("минуты"), INS("минутами"), LOC("минутах")),
+
+        new FNounS("неделя", NOM("неделя"), GEN("недели"), DAT("неделе"), ACC("неделя"), INS("неделей"), LOC("неделе")),
+        new FNounP("неделя", NOM("недель"), GEN("недель"), DAT("неделям"), ACC("недель"), INS("неделями"), LOC("неделях")),
+        new FNounPSpec("неделя", NOM("недели"), GEN("недель"), DAT("неделям"), ACC("недели"), INS("неделями"), LOC("неделях")),
+
+        new MNounS("день", NOM("день"), GEN("дня"), DAT("дню"), ACC("день"), INS("днём"), LOC("дне")),
+        new MNounP("день", NOM("дней"), GEN("дней"), DAT("дням"), ACC("дней"), INS("днями"), LOC("днях")),
+        new MNounPSpec("день", NOM("дня"), GEN("дней"), DAT("дням"), ACC("дня"), INS("днями"), LOC("днях")),
+
+        new MNounS("квартал", NOM("квартал"), GEN("квартала"), DAT("кварталу"), ACC("квартал"), INS("кварталом"), LOC("квартале")),
+        new MNounP("квартал", NOM("кварталов"), GEN("кварталов"), DAT("кварталам"), ACC("кварталов"), INS("кварталами"), LOC("кварталах")),
+        new MNounPSpec("квартал", NOM("квартала"), GEN("кварталов"), DAT("кварталам"), ACC("квартала"), INS("кварталами"), LOC("кварталах")),
+
+        new MNounS("год", NOM("год"), GEN("года"), DAT("году"), ACC("год"), INS("годом"), LOC("годе")),
+        new MNounP("год", NOM("лет"), GEN("лет"), DAT("годам"), ACC("лет"), INS("годами"), LOC("годах")),
+        new MNounPSpec("год", NOM("года"), GEN("лет"), DAT("годам"), ACC("года"), INS("годами"), LOC("годах")),
+
+        new MAdj("рабочий", NOM("рабочий"), GEN("рабочего"), DAT("рабочему"), ACC("рабочий"), INS("рабочим"), LOC("рабочем")),
+        new MAdjP("рабочий", NOM("рабочих"), GEN("рабочих"), DAT("рабочим"), ACC("рабочих"), INS("рабочими"), LOC("рабочих")),
+
+        new MAdj("календарный", NOM("календарный"), GEN("календарного"), DAT("календарному"), ACC("календарный"), INS("календарным"), LOC("календарном")),
+        new MAdjP("календарный", NOM("календарных"), GEN("календарных"), DAT("календарным"), ACC("календарных"), INS("календарными"), LOC("календарных")),
+
+
+        new MNounS("экземпляр", NOM("экземпляр"), GEN("экземпляра"), DAT("экземпляру"), ACC("экземпляр"), INS("экземпляром"), LOC("экземпляре")),
+        new MNounP("экземпляр", NOM("экземпляров"), GEN("экземпляров"), DAT("экземплярам"), ACC("экземпляров"), INS("экземплярами"), LOC("экземплярах")),
+        new MNounPSpec("экземпляр", NOM("экземпляра"), GEN("экземпляров"), DAT("экземплярам"), ACC("экземпляра"), INS("экземплярами"), LOC("экземплярах")),
+
+        new FNounS("штука", NOM("штука"), GEN("штуки"), DAT("штуке"), ACC("штука"), INS("штукой"), LOC("штуке")),
+        new FNounP("штука", NOM("штук"), GEN("штук"), DAT("штукам"), ACC("штук"), INS("штуками"), LOC("штуках")),
+        new FNounPSpec("штука", NOM("штуки"), GEN("штук"), DAT("штукам"), ACC("штуки"), INS("штуками"), LOC("штуках")),
+
+      ])
+    ;
+
+
+
+  /// <summary>
+  /// Добавляет грамматики для существительных, используемых в названиях порядков числительных.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddDigitsGrammars(this IServiceCollection scoll) =>
+    scoll
+    .AddKeyedScoped<BaseGrammar[]>("digits",
+      (sp, _) =>
+      [
+
+        new FNounS("десятитысячная", NOM("десятитысячная"), GEN("десятитысячной"), DAT("десятитысячной"), ACC("десятитысячную"), INS("десятитысячной"), LOC("десятитысячной")),
+        new FNounP("десятитысячная", NOM("десятитысячных"), GEN("десятитысячных"), DAT("десятитысячным"), ACC("десятитысячных"), INS("десятитысячными"), LOC("десятитысячных")),
+        new FNounPSpec("десятитысячная", NOM("десятитысячные"), GEN("десятитысячных"), DAT("десятитысячным"), ACC("десятитысячные"), INS("десятитысячными"), LOC("десятитысячных")),
+
+        new FNounS("тысячная", NOM("тысячная"), GEN("тысячной"), DAT("тысячной"), ACC("тысячную"), INS("тысячной"), LOC("тысячной")),
+        new FNounP("тысячная", NOM("тысячных"), GEN("тысячных"), DAT("тысячным"), ACC("тысячных"), INS("тысячными"), LOC("тысячных")),
+        new FNounPSpec("тысячная", NOM("тысячные"), GEN("тысячных"), DAT("тысячным"), ACC("тысячные"), INS("тысячными"), LOC("тысячных")),
+
+        new FNounS("сотая", NOM("сотая"), GEN("сотой"), DAT("сотой"), ACC("сотую"), INS("сотой"), LOC("сотой")),
+        new FNounP("сотая", NOM("сотых"), GEN("сотых"), DAT("сотым"), ACC("сотых"), INS("сотыми"), LOC("сотых")),
+        new FNounPSpec("сотая", NOM("сотые"), GEN("сотых"), DAT("сотым"), ACC("сотые"), INS("сотыми"), LOC("сотых")),
+
+        new FNounS("десятая", NOM("десятая"), GEN("десятой"), DAT("десятой"), ACC("десятую"), INS("десятой"), LOC("десятой")),
+        new FNounP("десятая", NOM("десятых"), GEN("десятых"), DAT("десятым"), ACC("десятых"), INS("десятыми"), LOC("десятых")),
+        new FNounPSpec("десятая", NOM("десятые"), GEN("десятых"), DAT("десятым"), ACC("десятые"), INS("десятыми"), LOC("десятых")),
+
+        new FNounS("целая", NOM("целая"), GEN("целой"), DAT("целой"), ACC("целую"), INS("целой"), LOC("целой")),
+        new FNounP("целая", NOM("целых"), GEN("целых"), DAT("целым"), ACC("целых"), INS("целыми"), LOC("целых")),
+        new FNounPSpec("целая", NOM("целые"), GEN("целых"), DAT("целым"), ACC("целые"), INS("целыми"), LOC("целых")),
+
+        new FNounS("тысяча", NOM("тысяча"), GEN("тысячи"), DAT("тысяче"), ACC("тысячу"), INS("тысячей"), LOC("тысяче")),
+        new FNounP("тысяча", NOM("тысяч"), GEN("тысяч"), DAT("тысячам"), ACC("тысяч"), INS("тысячами"), LOC("тысячах")),
+        new FNounPSpec("тысяча", NOM("тысячи"), GEN("тысяч"), DAT("тысячам"), ACC("тысячи"), INS("тысячами"), LOC("тысячах")),
+
+        new MNounS("миллион", NOM("миллион"), GEN("миллиона"), DAT("миллиону"), ACC("миллион"), INS("миллионом"), LOC("миллионе")),
+        new MNounP("миллион", NOM("миллионов"), GEN("миллионов"), DAT("миллионам"), ACC("миллионов"), INS("миллионами"), LOC("миллионах")),
+        new MNounPSpec("миллион", NOM("миллиона"), GEN("миллионов"), DAT("миллионам"), ACC("миллиона"), INS("миллионами"), LOC("миллионах")),
+
+        new MNounS("миллиард", NOM("миллиард"), GEN("миллиарда"), DAT("миллиарду"), ACC("миллиард"), INS("миллиардом"), LOC("миллиарде")),
+        new MNounP("миллиард", NOM("миллиардов"), GEN("миллиардов"), DAT("миллиардам"), ACC("миллиардов"), INS("миллиардами"), LOC("миллиардах")),
+        new MNounPSpec("миллиард", NOM("миллиарда"), GEN("миллиардов"), DAT("миллиардам"), ACC("миллиарда"), INS("миллиардами"), LOC("миллиардах")),
+
+        new MNounS("триллион", NOM("триллион"), GEN("триллиона"), DAT("триллиону"), ACC("триллион"), INS("триллионом"), LOC("триллионе")),
+        new MNounP("триллион", NOM("триллионов"), GEN("триллионов"), DAT("триллионам"), ACC("триллионов"), INS("триллионами"), LOC("триллионах")),
+        new MNounPSpec("триллион", NOM("триллиона"), GEN("триллионов"), DAT("триллионам"), ACC("триллиона"), INS("триллионами"), LOC("триллионах")),
+
+        new MNounS("квадриллион", NOM("квадриллион"), GEN("квадриллиона"), DAT("квадриллиону"), ACC("квадриллион"), INS("квадриллионом"), LOC("квадриллионе")),
+        new MNounP("квадриллион", NOM("квадриллионов"), GEN("квадриллионов"), DAT("квадриллионам"), ACC("квадриллионов"), INS("квадриллионами"), LOC("квадриллионах")),
+        new MNounPSpec("квадриллион", NOM("квадриллиона"), GEN("квадриллионов"), DAT("квадриллионам"), ACC("квадриллиона"), INS("квадриллионами"), LOC("квадриллионах")),
+
+        new MNounS("квинтиллион", NOM("квинтиллион"), GEN("квинтиллиона"), DAT("квинтиллиону"), ACC("квинтиллион"), INS("квинтиллионом"), LOC("квинтиллионе")),
+        new MNounP("квинтиллион", NOM("квинтиллионов"), GEN("квинтиллионов"), DAT("квинтиллионам"), ACC("квинтиллионов"), INS("квинтиллионами"), LOC("квинтиллионах")),
+        new MNounPSpec("квинтиллион", NOM("квинтиллиона"), GEN("квинтиллионов"), DAT("квинтиллионам"), ACC("квинтиллиона"), INS("квинтиллионами"), LOC("квинтиллионах")),
+
+        new MNounS("секстиллион", NOM("секстиллион"), GEN("секстиллиона"), DAT("секстиллиону"), ACC("секстиллион"), INS("секстиллионом"), LOC("секстиллионе")),
+        new MNounP("секстиллион", NOM("секстиллионов"), GEN("секстиллионов"), DAT("секстиллионам"), ACC("секстиллионов"), INS("секстиллионами"), LOC("секстиллионах")),
+        new MNounPSpec("секстиллион", NOM("секстиллиона"), GEN("секстиллионов"), DAT("секстиллионам"), ACC("секстиллиона"), INS("секстиллионами"), LOC("секстиллионах")),
+
+      ])
+    ;
+
+
+
+
+  public static IServiceCollection AddTypedEntitiesFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<Func<string, PartyName>>(sp => str =>
+    {
+      var psrv = sp.GetRequiredService<IParserService>();
+      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
+        psrv.PartiesPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
+
+      return new PartyName(grammarsFunc, () => str);
+    })
+    .AddScoped<Func<string, PositionName>>(sp => str =>
+    {
+      var psrv = sp.GetRequiredService<IParserService>();
+      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
+        psrv.PositionsPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
+
+      return new PositionName(grammarsFunc, () => str);
+    })
+    .AddScoped<Func<string, AuthorityName>>(sp => str =>
+    {
+      var psrv = sp.GetRequiredService<IParserService>();
+      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
+        psrv.AuthoritiesPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
+
+      return new AuthorityName(grammarsFunc, () => str);
+    })
+    .AddScoped<Func<string, LegalEntityName>>(sp => str =>
+    {
+      var psrv = sp.GetRequiredService<IParserService>();
+      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
+        psrv.LegalEntitiesPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
+
+      return new LegalEntityName(grammarsFunc, () => str);
+    })
+    .AddScoped<Func<int, string, DigitsName>>(sp => (v, str) =>
+    {
+      var psrv = sp.GetRequiredService<IParserService>();
+      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
+        sp.GetRequiredKeyedService<BaseGrammar[]>("digits").Where(psrv.GetUnitsNounsGrammars(int.Parse($"0{v.ToString()}"[^2..^1]), int.Parse($"0{v.ToString()}"[^1..]), st));
+
+      return new DigitsName(grammarsFunc, () => str);
+    })
+    ;
+
+
+
+  public static IServiceCollection AddAllGrammars(this IServiceCollection scoll) =>
+    scoll
+    .AddPartiesPositionsLegalsGrammars()
+    .AddUnitsGrammars()
+    .AddDigitsGrammars()
+    .AddScoped<IParserService, ParserService>()
+    .AddScoped<IPersonNameService, PersonNameService>()
+    .AddScoped<Func<string, BaseGrammar>>(sp => str => sp.GetRequiredKeyedService<BaseGrammar>(str))
+    .AddTypedEntitiesFactories()
+    ;
+
+
+}
