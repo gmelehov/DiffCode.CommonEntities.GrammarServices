@@ -226,6 +226,7 @@ public class ParserService(
     => gr => gr.PoS.Equals(PartOfSpeech.Adjective) && gr.End == name && gr.Arity == (val, endsWith) switch
     {
       (not 1, 1) => Arity.S,
+      (0, 0) => Arity.N,
       (_, 0 or 5 or 6 or 7 or 8 or 9) => Arity.P,
       (1, _) => Arity.P,
       (not 1, 2 or 3 or 4) => Arity.P,
@@ -237,6 +238,7 @@ public class ParserService(
     => gr => gr.PoS.Equals(PartOfSpeech.Noun) && gr.End == name && gr.Arity == (val, endsWith) switch
     {
       (not 1, 1) => Arity.S,
+      (0, 0) => Arity.N,
       (_, 0 or 5 or 6 or 7 or 8 or 9) => Arity.P,
       (1, _) => Arity.P,
       (not 1, 2 or 3 or 4) => Arity.PSpec,

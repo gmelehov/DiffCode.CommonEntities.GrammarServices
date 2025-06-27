@@ -198,58 +198,73 @@ public static class IServiceCollectionExtensions
         new MNounS("рубль", NOM("рубль"), GEN("рубля"), DAT("рублю"), ACC("рубль"), INS("рублём"), LOC("рубле")),
         new MNounP("рубль", NOM("рублей"), GEN("рублей"), DAT("рублям"), ACC("рублей"), INS("рублями"), LOC("рублях")),
         new MNounPSpec("рубль", NOM("рубля"), GEN("рублей"), DAT("рублям"), ACC("рубля"), INS("рублями"), LOC("рублях")),
+        new MNounN("рубль", NOM("рублей"), GEN("рублей"), DAT("рублей"), ACC("рублей"), INS("рублей"), LOC("рублей")),
 
-        new FNounS("копейка", NOM("копейка"), GEN("копейки"), DAT("копейке"), ACC("копейка"), INS("копейкой"), LOC("копейке")),
+        new FNounS("копейка", NOM("копейка"), GEN("копейки"), DAT("копейке"), ACC("копейку"), INS("копейкой"), LOC("копейке")),
         new FNounP("копейка", NOM("копеек"), GEN("копеек"), DAT("копейкам"), ACC("копеек"), INS("копейками"), LOC("копейках")),
         new FNounPSpec("копейка", NOM("копейки"), GEN("копеек"), DAT("копейкам"), ACC("копейки"), INS("копейками"), LOC("копейках")),
+        new FNounN("копейка", NOM("копеек"), GEN("копеек"), DAT("копеек"), ACC("копеек"), INS("копеек"), LOC("копеек")),
 
         new MNounS("месяц", NOM("месяц"), GEN("месяца"), DAT("месяцу"), ACC("месяц"), INS("месяцем"), LOC("месяце")),
         new MNounP("месяц", NOM("месяцев"), GEN("месяцев"), DAT("месяцам"), ACC("месяцев"), INS("месяцами"), LOC("месяцах")),
         new MNounPSpec("месяц", NOM("месяца"), GEN("месяцев"), DAT("месяцам"), ACC("месяца"), INS("месяцами"), LOC("месяцах")),
+        new MNounN("месяц", NOM("месяцев"), GEN("месяцев"), DAT("месяцев"), ACC("месяцев"), INS("месяцев"), LOC("месяцев")),
 
         new MNounS("час", NOM("час"), GEN("часа"), DAT("часу"), ACC("час"), INS("часом"), LOC("часе")),
         new MNounP("час", NOM("часов"), GEN("часов"), DAT("часам"), ACC("часов"), INS("часами"), LOC("часах")),
         new MNounPSpec("час", NOM("часа"), GEN("часов"), DAT("часам"), ACC("часа"), INS("часами"), LOC("часах")),
+        new MNounN("час", NOM("часов"), GEN("часов"), DAT("часов"), ACC("часов"), INS("часов"), LOC("часов")),
 
-        new FNounS("минута", NOM("минута"), GEN("минуты"), DAT("минуте"), ACC("минута"), INS("минутой"), LOC("минуте")),
+        new FNounS("минута", NOM("минута"), GEN("минуты"), DAT("минуте"), ACC("минуту"), INS("минутой"), LOC("минуте")),
         new FNounP("минута", NOM("минут"), GEN("минут"), DAT("минутам"), ACC("минут"), INS("минутами"), LOC("минутах")),
         new FNounPSpec("минута", NOM("минуты"), GEN("минут"), DAT("минутам"), ACC("минуты"), INS("минутами"), LOC("минутах")),
+        new FNounN("минута", NOM("минут"), GEN("минут"), DAT("минут"), ACC("минут"), INS("минут"), LOC("минут")),
 
-        new FNounS("неделя", NOM("неделя"), GEN("недели"), DAT("неделе"), ACC("неделя"), INS("неделей"), LOC("неделе")),
+        new FNounS("неделя", NOM("неделя"), GEN("недели"), DAT("неделе"), ACC("неделю"), INS("неделей"), LOC("неделе")),
         new FNounP("неделя", NOM("недель"), GEN("недель"), DAT("неделям"), ACC("недель"), INS("неделями"), LOC("неделях")),
         new FNounPSpec("неделя", NOM("недели"), GEN("недель"), DAT("неделям"), ACC("недели"), INS("неделями"), LOC("неделях")),
+        new FNounN("неделя", NOM("недель"), GEN("недель"), DAT("недель"), ACC("недель"), INS("недель"), LOC("недель")),
 
         new MNounS("день", NOM("день"), GEN("дня"), DAT("дню"), ACC("день"), INS("днём"), LOC("дне")),
         new MNounP("день", NOM("дней"), GEN("дней"), DAT("дням"), ACC("дней"), INS("днями"), LOC("днях")),
         new MNounPSpec("день", NOM("дня"), GEN("дней"), DAT("дням"), ACC("дня"), INS("днями"), LOC("днях")),
+        new MNounN("день", NOM("дней"), GEN("дней"), DAT("дней"), ACC("дней"), INS("дней"), LOC("дней")),
 
         new MNounS("квартал", NOM("квартал"), GEN("квартала"), DAT("кварталу"), ACC("квартал"), INS("кварталом"), LOC("квартале")),
         new MNounP("квартал", NOM("кварталов"), GEN("кварталов"), DAT("кварталам"), ACC("кварталов"), INS("кварталами"), LOC("кварталах")),
         new MNounPSpec("квартал", NOM("квартала"), GEN("кварталов"), DAT("кварталам"), ACC("квартала"), INS("кварталами"), LOC("кварталах")),
+        new MNounN("квартал", NOM("кварталов"), GEN("кварталов"), DAT("кварталов"), ACC("кварталов"), INS("кварталов"), LOC("кварталов")),
 
         new MNounS("год", NOM("год"), GEN("года"), DAT("году"), ACC("год"), INS("годом"), LOC("годе")),
         new MNounP("год", NOM("лет"), GEN("лет"), DAT("годам"), ACC("лет"), INS("годами"), LOC("годах")),
         new MNounPSpec("год", NOM("года"), GEN("лет"), DAT("годам"), ACC("года"), INS("годами"), LOC("годах")),
+        new MNounN("год", NOM("лет"), GEN("лет"), DAT("лет"), ACC("лет"), INS("лет"), LOC("лет")),
 
         new MAdj("рабочий", NOM("рабочий"), GEN("рабочего"), DAT("рабочему"), ACC("рабочий"), INS("рабочим"), LOC("рабочем")),
         new MAdjP("рабочий", NOM("рабочих"), GEN("рабочих"), DAT("рабочим"), ACC("рабочих"), INS("рабочими"), LOC("рабочих")),
+        new MAdjN("рабочий", NOM("рабочих"), GEN("рабочих"), DAT("рабочих"), ACC("рабочих"), INS("рабочих"), LOC("рабочих")),
 
         new MAdj("календарный", NOM("календарный"), GEN("календарного"), DAT("календарному"), ACC("календарный"), INS("календарным"), LOC("календарном")),
         new MAdjP("календарный", NOM("календарных"), GEN("календарных"), DAT("календарным"), ACC("календарных"), INS("календарными"), LOC("календарных")),
+        new MAdjN("календарный", NOM("календарных"), GEN("календарных"), DAT("календарных"), ACC("календарных"), INS("календарных"), LOC("календарных")),
 
 
         new MNounS("экземпляр", NOM("экземпляр"), GEN("экземпляра"), DAT("экземпляру"), ACC("экземпляр"), INS("экземпляром"), LOC("экземпляре")),
         new MNounP("экземпляр", NOM("экземпляров"), GEN("экземпляров"), DAT("экземплярам"), ACC("экземпляров"), INS("экземплярами"), LOC("экземплярах")),
         new MNounPSpec("экземпляр", NOM("экземпляра"), GEN("экземпляров"), DAT("экземплярам"), ACC("экземпляра"), INS("экземплярами"), LOC("экземплярах")),
+        new MNounN("экземпляр", NOM("экземпляров"), GEN("экземпляров"), DAT("экземпляров"), ACC("экземпляров"), INS("экземпляров"), LOC("экземпляров")),
 
-        new FNounS("штука", NOM("штука"), GEN("штуки"), DAT("штуке"), ACC("штука"), INS("штукой"), LOC("штуке")),
+
+        new FNounS("штука", NOM("штука"), GEN("штуки"), DAT("штуке"), ACC("штуку"), INS("штукой"), LOC("штуке")),
         new FNounP("штука", NOM("штук"), GEN("штук"), DAT("штукам"), ACC("штук"), INS("штуками"), LOC("штуках")),
         new FNounPSpec("штука", NOM("штуки"), GEN("штук"), DAT("штукам"), ACC("штуки"), INS("штуками"), LOC("штуках")),
+        new FNounN("штука", NOM("штук"), GEN("штук"), DAT("штук"), ACC("штук"), INS("штук"), LOC("штук")),
 
 
         new MNounS("процент", NOM("процент"), GEN("процента"), DAT("проценту"), ACC("процент"), INS("процентом"), LOC("проценте")),
         new MNounP("процент", NOM("процентов"), GEN("процентов"), DAT("процентам"), ACC("процентов"), INS("процентами"), LOC("процентах")),
         new MNounPSpec("процент", NOM("процента"), GEN("процентов"), DAT("процентам"), ACC("процента"), INS("процентами"), LOC("процентах")),
+        new MNounN("процент", NOM("процентов"), GEN("процентов"), DAT("процентов"), ACC("процентов"), INS("процентов"), LOC("процентов")),
 
       ])
     ;
@@ -478,14 +493,14 @@ public static class IServiceCollectionExtensions
     .AddScoped<BaseCurrency.CasesFactory>(
       sp => () => c =>
       {
-        var _numSpell = sp.GetRequiredService<NumGrammar.Factory>()();
+        var _numSpell = sp.GetRequiredService<NumGrammar.Factory>();
         var _measureFn = sp.GetRequiredService<MeasuresFactory>();
 
         var ret = new List<Case>(6);
-        var sp1 = _numSpell?.Invoke(c.WholePart);
         var sp2 = _measureFn?.Invoke(c.Measure.Full).Invoke(c.WholePart);
-        var sp3 = _numSpell?.Invoke(c.FractionalPart);
+        var sp1 = _numSpell?.Invoke(sp2[0].Gender).Invoke(c.WholePart);
         var sp4 = _measureFn?.Invoke(c.Measure.FrUnits.Full).Invoke(c.FractionalPart);
+        var sp3 = _numSpell?.Invoke(sp4[0].Gender).Invoke(c.FractionalPart);
 
         Func<GCase, string> grammarsText = c => $"{sp1[c].Text} {sp2[0][c].Text} {sp3[c].Text} {sp4[0][c].Text}";
 

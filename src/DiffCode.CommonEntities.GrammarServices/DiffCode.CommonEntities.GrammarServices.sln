@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiffCode.CommonEntities.Gra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiffCode.CommonEntities", "..\..\..\DiffCode.CommonEntities\src\DiffCode.CommonEntities\DiffCode.CommonEntities\DiffCode.CommonEntities.csproj", "{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiffCode.CommonEntities.GrammarServices.Tests", "..\DiffCode.CommonEntities.GrammarServices.Tests\DiffCode.CommonEntities.GrammarServices.Tests.csproj", "{C51B9AFB-1513-4637-B23F-7FA9ABD65A4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FDE7EDF-22A9-3841-E52D-7BE20F8BC3FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C51B9AFB-1513-4637-B23F-7FA9ABD65A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C51B9AFB-1513-4637-B23F-7FA9ABD65A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C51B9AFB-1513-4637-B23F-7FA9ABD65A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C51B9AFB-1513-4637-B23F-7FA9ABD65A4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
