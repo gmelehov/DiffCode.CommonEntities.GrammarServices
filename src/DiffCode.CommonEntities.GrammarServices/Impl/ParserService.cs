@@ -1,125 +1,38 @@
 ﻿using DiffCode.CommonEntities.Abstractions;
 using DiffCode.CommonEntities.Enums;
-using DiffCode.CommonEntities.Extensions;
-using DiffCode.CommonEntities.Grammars;
 using DiffCode.CommonEntities.Interfaces;
-using DiffCode.CommonEntities.Persons;
-using DiffCode.CommonEntities.Sources;
+using DiffCode.CommonEntities.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
 using System.Text.RegularExpressions;
-using static DiffCode.CommonEntities.Abstractions.Case;
 
 
 namespace DiffCode.CommonEntities.GrammarServices.Impl;
 
-
-public class ParserService : IParserService
+/// <summary>
+/// Реализация сервиса парсинга исходных строк.
+/// </summary>
+public class ParserService(
+  [FromKeyedServices("units")] BaseGrammar[] grammars,
+  [FromKeyedServices("digits")] BaseGrammar[] digitsGrammars,
+  Func<string, BaseGrammar> func
+    ) 
+  : IParserService
 {
-  [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-  private readonly BaseGrammar[] _unitsGrammars;
 
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-  private readonly BaseGrammar[] _digitsGrammars;
+  private readonly BaseGrammar[] _unitsGrammars = grammars;
 
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-  private readonly Func<string, BaseGrammar> _fn;
+  private readonly BaseGrammar[] _digitsGrammars = digitsGrammars;
+
+  [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+  private readonly Func<string, BaseGrammar> _fn = func;
 
 
 
-
-  public ParserService(
-    [FromKeyedServices("units")] BaseGrammar[] grammars,
-    [FromKeyedServices("digits")] BaseGrammar[] digitsGrammars,
-    Func<string, BaseGrammar> func
-    )
-  {
-    _unitsGrammars = grammars;
-    _fn = func;
-    _digitsGrammars = digitsGrammars;
-  }
-
-
-
-
-
-  ///// <summary>
-  ///// <inheritdoc/>
-  ///// </summary>
-  ///// <param name="input"></param>
-  ///// <returns></returns>
-  //public LegalEntityName ToLegalEntityName(string input)
-  //{
-  //  LegalEntityName ret = new(input);
-
-  //  var match = LegalEntitiesPattern.Match(ret.Full.DecapitalizeFirstChar());
-  //  ret.AddCases(match.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => _fn(s)).ToArray());
-
-  //  return ret;
-  //}
-
-  ///// <summary>
-  ///// <inheritdoc/>
-  ///// </summary>
-  ///// <param name="input"></param>
-  ///// <returns></returns>
-  //public PartyName ToPartyName(string input)
-  //{
-  //  PartyName ret = new(input);
-
-  //  var match = PartiesPattern.Match(ret.Full.DecapitalizeFirstChar());
-  //  ret.AddCases(match.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => _fn(s)).ToArray());
-
-  //  return ret;
-  //}
-
-  ///// <summary>
-  ///// <inheritdoc/>
-  ///// </summary>
-  ///// <param name="input"></param>
-  ///// <returns></returns>
-  //public PositionName ToPositionName(string input)
-  //{
-  //  PositionName ret = new(input);
-
-  //  var match = PositionsPattern.Match(ret.Full.DecapitalizeFirstChar());
-  //  ret.AddCases(match.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => _fn(s)).ToArray());
-
-  //  return ret;
-  //}
-
-  ///// <summary>
-  ///// <inheritdoc/>
-  ///// </summary>
-  ///// <param name="input"></param>
-  ///// <returns></returns>
-  //public AuthorityName ToAuthorityName(string input)
-  //{
-  //  AuthorityName ret = new(input);
-
-  //  var match = AuthoritiesPattern.Match(ret.Full.DecapitalizeFirstChar());
-  //  ret.AddCases(match.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => _fn(s)).ToArray());
-
-  //  return ret;
-  //}
-
-  ///// <summary>
-  ///// <inheritdoc/>
-  ///// </summary>
-  ///// <param name="input"></param>
-  ///// <returns></returns>
-  //public DigitsName ToDigitsName<T, U, E>(BaseMeasurement<T, U, E> val, string input) where T : INumber<T> where U : IUnits<U, E> where E : struct, Enum
-  //{
-  //  DigitsName ret = new(input);
-  //  List<BaseGrammar> grammars = [];
-
-  //  grammars.AddRange(_digitsGrammars.Where(GetUnitsNounsGrammars(int.Parse($"0{val.AsString}"[^2..^1]), int.Parse($"0{val.AsString}"[^1..]), input)));
-  //  ret.AddCases(grammars.ToArray());
-
-  //  return ret;
-  //}
 
 
   /// <summary>
@@ -129,14 +42,6 @@ public class ParserService : IParserService
   /// <returns></returns>
   public DigitsName ToDigitsName(int val, string input)
   {
-    //DigitsName ret = new(input);
-    //List<BaseGrammar> grammars = [];
-
-    //grammars.AddRange(_digitsGrammars.Where(GetUnitsNounsGrammars(int.Parse($"0{val.ToString()}"[^2..^1]), int.Parse($"0{val.ToString()}"[^1..]), input)));
-    //ret.AddCases(grammars.ToArray());
-
-    //return ret;
-
     Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
        _digitsGrammars.Where(GetUnitsNounsGrammars(int.Parse($"0{val.ToString()}"[^2..^1]), int.Parse($"0{val.ToString()}"[^1..]), st));
 
@@ -186,14 +91,14 @@ public class ParserService : IParserService
   /// </summary>
   /// <param name="input"></param>
   /// <returns></returns>
-  public bool IsUnitName(string input) => Sources.Units.Patterns.Any(a => Regex.IsMatch(input.ToLower(), a));
+  public bool IsUnitName(string input) => Constants.Units.Patterns.Any(a => Regex.IsMatch(input.ToLower(), a));
 
   /// <summary>
   /// <inheritdoc/>
   /// </summary>
   /// <param name="input"></param>
   /// <returns></returns>
-  public bool IsDigitsName(string input) => Sources.Digits.Patterns.Any(a => Regex.IsMatch(input.ToLower(), a));
+  public bool IsDigitsName(string input) => Constants.Digits.Patterns.Any(a => Regex.IsMatch(input.ToLower(), a));
 
   /// <summary>
   /// <inheritdoc/>
@@ -228,14 +133,14 @@ public class ParserService : IParserService
   /// </summary>
   /// <param name="input"></param>
   /// <returns></returns>
-  public Regex GetUnitPatternFor(string input) => new Regex(Sources.Units.Patterns.FirstOrDefault(f => Regex.IsMatch(input.ToLower(), f)));
+  public Regex GetUnitPatternFor(string input) => new Regex(Constants.Units.Patterns.FirstOrDefault(f => Regex.IsMatch(input.ToLower(), f)));
 
   /// <summary>
   /// <inheritdoc/>
   /// </summary>
   /// <param name="input"></param>
   /// <returns></returns>
-  public Regex GetDigitsPatternFor(string input) => new Regex(Sources.Digits.Patterns.FirstOrDefault(f => Regex.IsMatch(input.ToLower(), f)));
+  public Regex GetDigitsPatternFor(string input) => new Regex(Constants.Digits.Patterns.FirstOrDefault(f => Regex.IsMatch(input.ToLower(), f)));
 
 
 
@@ -250,7 +155,20 @@ public class ParserService : IParserService
 
     return ret.ToArray();
   }
-    
+
+
+  public BaseGrammar[] GetUnitsGrammarsFor(int val, string input)
+  {
+    var names = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var grammars = _unitsGrammars.Where(a => names.Contains(a.End));
+    List<BaseGrammar> ret = [];
+
+    ret.AddRange(grammars.Where(w => GetUnitsAdjectivesGrammars(int.Parse($"0{val.ToString()}"[^2..^1]), int.Parse($"0{val.ToString()}"[^1..]), w.End).Invoke(w)));
+    ret.AddRange(grammars.Where(w => GetUnitsNounsGrammars(int.Parse($"0{val.ToString()}"[^2..^1]), int.Parse($"0{val.ToString()}"[^1..]), w.End).Invoke(w)));
+
+    return ret.ToArray();
+  }
+
 
 
 
@@ -278,12 +196,12 @@ public class ParserService : IParserService
   /// <summary>
   /// <inheritdoc/>
   /// </summary>
-  public Regex UnitsPattern => new Regex(@"^((" + string.Join(@"|", Sources.Units.Adjectives.Select(s => s.ToLower())) + @")*\s*)*(" + string.Join(@"|", Sources.Units.Nouns.Select(s => s.ToLower())) + @")");
+  public Regex UnitsPattern => new Regex(@"^((" + string.Join(@"|", Constants.Units.Adjectives.Select(s => s.ToLower())) + @")*\s*)*(" + string.Join(@"|", Constants.Units.Nouns.Select(s => s.ToLower())) + @")");
 
   /// <summary>
   /// <inheritdoc/>
   /// </summary>
-  public Regex DigitsPattern => new Regex(@"^((" + string.Join(@"|", Sources.Digits.Nouns.Select(s => s.ToLower())) + @")*\s*)");
+  public Regex DigitsPattern => new Regex(@"^((" + string.Join(@"|", Constants.Digits.Nouns.Select(s => s.ToLower())) + @")*\s*)");
 
 
 
@@ -297,7 +215,7 @@ public class ParserService : IParserService
       .Reverse()
       .Select((s, i) => new ValueTuple<int, int, Enums.Digits>(int.Parse(s), int.Parse(s.LastOrDefault().ToString()), (Enums.Digits)(i * 3)))
       .Where(w => value < 1000 ? true : w.Item1 > 0 && value >= 1000)
-      .Select(ss => $"{new CasedValue(ss.Item1, gCase, Gender.M, ss.Item3).Result} {ToDigitsName(ss.Item1, GetDigitsText(ss.Item3))[gCase]}")
+      .Select(ss => $"{new CasedValue(ss.Item1, gCase, gender, ss.Item3).Result} {ToDigitsName(ss.Item1, GetDigitsText(ss.Item3))[gCase]}")
       .Where(w => !w.StartsWith(" "))
       .Reverse()
       ).Trim();

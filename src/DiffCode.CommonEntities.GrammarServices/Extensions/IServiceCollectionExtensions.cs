@@ -1,12 +1,20 @@
 ﻿using DiffCode.CommonEntities.Abstractions;
+using DiffCode.CommonEntities.Enums;
 using DiffCode.CommonEntities.Extensions;
 using DiffCode.CommonEntities.Grammars;
 using DiffCode.CommonEntities.GrammarServices.Impl;
+using DiffCode.CommonEntities.Persons;
+using DiffCode.CommonEntities.Services;
+using DiffCode.CommonEntities.Units.Currency;
+using DiffCode.CommonEntities.Units.Part;
+using DiffCode.CommonEntities.Units.Quantity;
+using DiffCode.CommonEntities.Units.Time;
 using Microsoft.Extensions.DependencyInjection;
 using static DiffCode.CommonEntities.Abstractions.Case;
 
 
 namespace DiffCode.CommonEntities.GrammarServices.Extensions;
+
 
 public static class IServiceCollectionExtensions
 {
@@ -125,6 +133,11 @@ public static class IServiceCollectionExtensions
     .AddKeyedScoped("получатель", (sp, _) => sp.GetBaseGrammar(10, _))
     .AddKeyedScoped("пользователь", (sp, _) => sp.GetBaseGrammar(10, _))
     .AddKeyedScoped("поручитель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("поставщик", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("правообладатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("принципал", (sp, _) => sp.GetBaseGrammar(9, _))
+    .AddKeyedScoped("приобретатель", (sp, _) => sp.GetBaseGrammar(10, _))
+    .AddKeyedScoped("продавец", (sp, _) => sp.GetBaseGrammar(14, _))
     .AddKeyedScoped("работник", (sp, _) => sp.GetBaseGrammar(9, _))
     .AddKeyedScoped("работодатель", (sp, _) => sp.GetBaseGrammar(10, _))
     .AddKeyedScoped("ссудодатель", (sp, _) => sp.GetBaseGrammar(10, _))
@@ -233,6 +246,11 @@ public static class IServiceCollectionExtensions
         new FNounP("штука", NOM("штук"), GEN("штук"), DAT("штукам"), ACC("штук"), INS("штуками"), LOC("штуках")),
         new FNounPSpec("штука", NOM("штуки"), GEN("штук"), DAT("штукам"), ACC("штуки"), INS("штуками"), LOC("штуках")),
 
+
+        new MNounS("процент", NOM("процент"), GEN("процента"), DAT("проценту"), ACC("процент"), INS("процентом"), LOC("проценте")),
+        new MNounP("процент", NOM("процентов"), GEN("процентов"), DAT("процентам"), ACC("процентов"), INS("процентами"), LOC("процентах")),
+        new MNounPSpec("процент", NOM("процента"), GEN("процентов"), DAT("процентам"), ACC("процента"), INS("процентами"), LOC("процентах")),
+
       ])
     ;
 
@@ -267,7 +285,7 @@ public static class IServiceCollectionExtensions
 
         new FNounS("целая", NOM("целая"), GEN("целой"), DAT("целой"), ACC("целую"), INS("целой"), LOC("целой")),
         new FNounP("целая", NOM("целых"), GEN("целых"), DAT("целым"), ACC("целых"), INS("целыми"), LOC("целых")),
-        new FNounPSpec("целая", NOM("целые"), GEN("целых"), DAT("целым"), ACC("целые"), INS("целыми"), LOC("целых")),
+        new FNounPSpec("целая", NOM("целых"), GEN("целых"), DAT("целым"), ACC("целых"), INS("целыми"), LOC("целых")),
 
         new FNounS("тысяча", NOM("тысяча"), GEN("тысячи"), DAT("тысяче"), ACC("тысячу"), INS("тысячей"), LOC("тысяче")),
         new FNounP("тысяча", NOM("тысяч"), GEN("тысяч"), DAT("тысячам"), ACC("тысяч"), INS("тысячами"), LOC("тысячах")),
@@ -303,49 +321,329 @@ public static class IServiceCollectionExtensions
 
 
 
-  public static IServiceCollection AddTypedEntitiesFactories(this IServiceCollection scoll) =>
+
+
+  /// <summary>
+  /// Добавляет фабрики для числительных и названий единиц измерения.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddCommonGrammarFactories(this IServiceCollection scoll) =>
     scoll
-    .AddScoped<Func<string, PartyName>>(sp => str =>
+    .AddScoped<Func<int, NumGrammar>>(sp => val =>
     {
       var psrv = sp.GetRequiredService<IParserService>();
-      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
-        psrv.PartiesPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
-
-      return new PartyName(grammarsFunc, () => str);
+      var ret = new NumGrammar(
+        NOM(psrv.GetSpelledValue(val, GCase.NOM)), GEN(psrv.GetSpelledValue(val, GCase.GEN)),
+        DAT(psrv.GetSpelledValue(val, GCase.DAT)), ACC(psrv.GetSpelledValue(val, GCase.ACC)),
+        INS(psrv.GetSpelledValue(val, GCase.INS)), LOC(psrv.GetSpelledValue(val, GCase.LOC))
+        );
+      return ret;
     })
-    .AddScoped<Func<string, PositionName>>(sp => str =>
+    .AddScoped<NumGrammar.Factory>(sp => (Gender gender = Gender.M) => val =>
     {
       var psrv = sp.GetRequiredService<IParserService>();
-      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
-        psrv.PositionsPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
-
-      return new PositionName(grammarsFunc, () => str);
+      var ret = new NumGrammar(
+        NOM(psrv.GetSpelledValue(val, GCase.NOM, gender)), GEN(psrv.GetSpelledValue(val, GCase.GEN, gender)),
+        DAT(psrv.GetSpelledValue(val, GCase.DAT, gender)), ACC(psrv.GetSpelledValue(val, GCase.ACC, gender)),
+        INS(psrv.GetSpelledValue(val, GCase.INS, gender)), LOC(psrv.GetSpelledValue(val, GCase.LOC, gender))
+        );
+      return ret;
     })
-    .AddScoped<Func<string, AuthorityName>>(sp => str =>
-    {
-      var psrv = sp.GetRequiredService<IParserService>();
-      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
-        psrv.AuthoritiesPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
+    .AddScoped<MeasuresFactory>(
+      sp => str => v => sp.GetRequiredService<IParserService>().GetUnitsGrammarsFor(v, str)
+      )
+    .AddScoped<DigitsName.GrammarsFactory>(
+      sp => () => (v, st) =>
+      {
+        var digitsGrammars = sp.GetRequiredKeyedService<BaseGrammar[]>("digits");
+        var psrv = sp.GetRequiredService<IParserService>();
 
-      return new AuthorityName(grammarsFunc, () => str);
-    })
-    .AddScoped<Func<string, LegalEntityName>>(sp => str =>
-    {
-      var psrv = sp.GetRequiredService<IParserService>();
-      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
-        psrv.LegalEntitiesPattern.Match(str.DecapitalizeFirstChar()).Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s));
+        return digitsGrammars.Where(psrv.GetUnitsNounsGrammars(int.Parse($"0{v.ToString()}"[^2..^1]), int.Parse($"0{v.ToString()}"[^1..]), st));
+      })
+    ;
 
-      return new LegalEntityName(grammarsFunc, () => str);
-    })
-    .AddScoped<Func<int, string, DigitsName>>(sp => (v, str) =>
-    {
-      var psrv = sp.GetRequiredService<IParserService>();
-      Func<string, IEnumerable<BaseGrammar>> grammarsFunc = st =>
-        sp.GetRequiredKeyedService<BaseGrammar[]>("digits").Where(psrv.GetUnitsNounsGrammars(int.Parse($"0{v.ToString()}"[^2..^1]), int.Parse($"0{v.ToString()}"[^1..]), st));
 
-      return new DigitsName(grammarsFunc, () => str);
+  /// <summary>
+  /// Добавляет фабрики для создания названий сторон-подписантов.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddPartyNameFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<PartyName.GrammarsFactory>(
+      sp => () => st => sp.GetRequiredService<IParserService>()
+      .PartiesPattern
+      .Match(st.DecapitalizeFirstChar())
+      .Value
+      .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+      .Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s))
+      )
+    .AddScoped<PartyName.Factory>(sp => str => new PartyName(str, sp.GetRequiredService<PartyName.GrammarsFactory>()))
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания названий полномочий подписантов.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddAuthorityNameFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<AuthorityName.GrammarsFactory>(
+      sp => () => st => sp.GetRequiredService<IParserService>()
+      .AuthoritiesPattern
+      .Match(st.DecapitalizeFirstChar())
+      .Value
+      .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+      .Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s))
+      )
+    .AddScoped<AuthorityName.Factory>(sp => str => new AuthorityName(str, sp.GetRequiredService<AuthorityName.GrammarsFactory>()))
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания названий организационно-правовых форм сторон-подписантов.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddLegalEntityNameFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<LegalEntityName.GrammarsFactory>(
+      sp => () => st => sp.GetRequiredService<IParserService>()
+      .LegalEntitiesPattern
+      .Match(st.DecapitalizeFirstChar())
+      .Value
+      .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+      .Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s))
+      )
+    .AddScoped<LegalEntityName.Factory>(sp => (str, sh) => new LegalEntityName(str, sh, sp.GetRequiredService<LegalEntityName.GrammarsFactory>()))
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания названий должностей подписантов.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddPositionNameFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<PositionName.GrammarsFactory>(
+      sp => () => st => sp.GetRequiredService<IParserService>()
+      .PositionsPattern
+      .Match(st.DecapitalizeFirstChar())
+      .Value
+      .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+      .Select(s => sp.GetRequiredKeyedService<BaseGrammar>(s))
+      )
+    .AddScoped<PositionName.Factory>(sp => str => new PositionName(str, sp.GetRequiredService<PositionName.GrammarsFactory>()))
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания моделей личных данных (ФИО, пол).
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  /// <exception cref="NotImplementedException"></exception>
+  public static IServiceCollection AddPersonNameFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<BasePersonName.PartsFactory>(
+      sp => () => str => sp.GetRequiredService<IPersonNameService>().GetPersonNameParts(str)
+      )
+    .AddScoped<MPersonName.Factory>(sp => str => new MPersonName(str, sp.GetRequiredService<BasePersonName.PartsFactory>()))
+    .AddScoped<FPersonName.Factory>(sp => str => new FPersonName(str, sp.GetRequiredService<BasePersonName.PartsFactory>()))
+    .AddScoped<BasePersonName.Factory>(sp => str =>
+    {
+      var parts = sp.GetRequiredService<BasePersonName.PartsFactory>()()(str);
+      var gender = parts?.FirstOrDefault(f => f.Part == NamePart.FIRST).Gender;
+
+      return gender switch
+      {
+        Gender.M => sp.GetRequiredService<MPersonName.Factory>()(str),
+        Gender.F => sp.GetRequiredService<FPersonName.Factory>()(str),
+        _ => throw new NotImplementedException(),
+      };
     })
     ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания значений с валютой.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddCurrencyUnitsFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<BaseCurrency.CasesFactory>(
+      sp => () => c =>
+      {
+        var _numSpell = sp.GetRequiredService<NumGrammar.Factory>()();
+        var _measureFn = sp.GetRequiredService<MeasuresFactory>();
+
+        var ret = new List<Case>(6);
+        var sp1 = _numSpell?.Invoke(c.WholePart);
+        var sp2 = _measureFn?.Invoke(c.Measure.Full).Invoke(c.WholePart);
+        var sp3 = _numSpell?.Invoke(c.FractionalPart);
+        var sp4 = _measureFn?.Invoke(c.Measure.FrUnits.Full).Invoke(c.FractionalPart);
+
+        Func<GCase, string> grammarsText = c => $"{sp1[c].Text} {sp2[0][c].Text} {sp3[c].Text} {sp4[0][c].Text}";
+
+        ret.AddRange(
+          NOM(grammarsText(GCase.NOM)), GEN(grammarsText(GCase.GEN)),
+          DAT(grammarsText(GCase.DAT)), ACC(grammarsText(GCase.ACC)),
+          INS(grammarsText(GCase.INS)), LOC(grammarsText(GCase.LOC))
+          );
+
+        return ret;
+      })
+    .AddScoped<Roubles.Factory>(
+      sp => v => new Roubles(v, sp.GetRequiredService<BaseCurrency.CasesFactory>())
+      )
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания значений с единицей измерения количества.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddQuantityUnitsFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<BaseQuantity.CasesFactory>(
+      sp => () => c =>
+      {
+        var _numSpell = sp.GetRequiredService<NumGrammar.Factory>()();
+        var _measureFn = sp.GetRequiredService<MeasuresFactory>();
+
+        var ret = new List<Case>(6);
+        var sp1 = _numSpell?.Invoke(c.Value);
+        var sp2 = _measureFn?.Invoke(c.Measure.Full)?.Invoke(c.Value);
+
+        Func<GCase, string> grammarsText = c => $"{sp1[c].Text} {sp2[0][c].Text}";
+
+        ret.AddRange(
+          NOM(grammarsText(GCase.NOM)), GEN(grammarsText(GCase.GEN)),
+          DAT(grammarsText(GCase.DAT)), ACC(grammarsText(GCase.ACC)),
+          INS(grammarsText(GCase.INS)), LOC(grammarsText(GCase.LOC))
+          );
+
+        return ret;
+      })
+    .AddScoped<Instances.Factory>(
+      sp => v => new Instances(v, sp.GetRequiredService<BaseQuantity.CasesFactory>())
+      )
+    .AddScoped<Pieces.Factory>(
+      sp => v => new Pieces(v, sp.GetRequiredService<BaseQuantity.CasesFactory>())
+      )
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания значений с единицей измерения времени.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddTimeUnitsFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<BaseTime<int>.CasesFactory>(
+      sp => () => t =>
+      {
+        var _numSpell = sp.GetRequiredService<NumGrammar.Factory>()();
+        var _measureFn = sp.GetRequiredService<MeasuresFactory>();
+        var ret = new List<Case>(6);
+
+        var sp1 = _numSpell?.Invoke(t.Value);
+        var sp2 = _measureFn?.Invoke(t.Measure.Full).Invoke(t.Value);
+
+        Func<GCase, string> grammarsText = c => $"{sp1[c].Text} {string.Join(" ", sp2.Select(s => s[c].Text))}";
+
+        ret.AddRange(
+          NOM(grammarsText(GCase.NOM)), GEN(grammarsText(GCase.GEN)),
+          DAT(grammarsText(GCase.DAT)), ACC(grammarsText(GCase.ACC)),
+          INS(grammarsText(GCase.INS)), LOC(grammarsText(GCase.LOC))
+          );
+
+        return ret;
+      })
+    .AddScoped<CalendDays.Factory>(
+      sp => v => new CalendDays(v, sp.GetRequiredService<BaseTime<int>.CasesFactory>())
+      )
+    .AddScoped<WorkDays.Factory>(
+      sp => v => new WorkDays(v, sp.GetRequiredService<BaseTime<int>.CasesFactory>())
+      )
+    .AddScoped<Days.Factory>(
+      sp => v => new Days(v, sp.GetRequiredService<BaseTime<int>.CasesFactory>())
+      )
+    .AddScoped<Weeks.Factory>(
+      sp => v => new Weeks(v, sp.GetRequiredService<BaseTime<int>.CasesFactory>())
+      )
+    .AddScoped<Months.Factory>(
+      sp => v => new Months(v, sp.GetRequiredService<BaseTime<int>.CasesFactory>())
+      )
+    .AddScoped<Years.Factory>(
+      sp => v => new Years(v, sp.GetRequiredService<BaseTime<int>.CasesFactory>())
+      )
+    ;
+
+
+  /// <summary>
+  /// Добавляет фабрики для создания значений с единицей измерения частей/долей.
+  /// </summary>
+  /// <param name="scoll"></param>
+  /// <returns></returns>
+  public static IServiceCollection AddPartUnitsFactories(this IServiceCollection scoll) =>
+    scoll
+    .AddScoped<BasePart.CasesFactory>(
+      sp => () => p =>
+      {
+        var ret = new List<Case>(6);
+
+        var _numSpell = sp.GetRequiredService<NumGrammar.Factory>();
+        var _measureFn = sp.GetRequiredService<MeasuresFactory>();
+        var _digitsFn = sp.GetRequiredService<DigitsName.GrammarsFactory>();
+
+        string digits = p.FractionalPart.ToString().Length switch
+        {
+          0 => null,
+          1 => "десятая",
+          2 => "сотая",
+          3 => "тысячная",
+          4 => "десятитысячная",
+          _ => throw new NotImplementedException()
+        };
+
+        Func<GCase, string> grammarsText;
+        var sp1 = _numSpell?.Invoke().Invoke(p.WholePart);
+        var sp3 = _numSpell?.Invoke(Gender.F).Invoke(p.FractionalPart);
+        var sp5 = _measureFn?.Invoke(p.Measure.Full).Invoke(p.WholePart);
+
+        if (digits == null)
+        {
+          grammarsText = c => $"{sp1[c].Text} {sp3[c].Text} {sp5[0][c].Text}";
+        }
+        else
+        {
+          var sp2 = _digitsFn?.Invoke().Invoke(p.WholePart, "целая").ToList();
+          var sp4 = _digitsFn?.Invoke().Invoke(p.FractionalPart, digits).ToList();
+          grammarsText = c => $"{sp1[c].Text} {sp2[0][c].Text} {sp3[c].Text} {sp4[0][c].Text} {p.Measure.Short}";
+        }
+
+        ret.AddRange(
+          NOM(grammarsText(GCase.NOM)), GEN(grammarsText(GCase.GEN)),
+          DAT(grammarsText(GCase.DAT)), ACC(grammarsText(GCase.ACC)),
+          INS(grammarsText(GCase.INS)), LOC(grammarsText(GCase.LOC))
+          );
+
+        return ret;
+      })
+    .AddScoped<Percents.Factory>(
+      sp => v => new Percents(v, sp.GetRequiredService<BasePart.CasesFactory>())
+      )
+    ;
+
+
+
 
 
 
@@ -357,7 +655,17 @@ public static class IServiceCollectionExtensions
     .AddScoped<IParserService, ParserService>()
     .AddScoped<IPersonNameService, PersonNameService>()
     .AddScoped<Func<string, BaseGrammar>>(sp => str => sp.GetRequiredKeyedService<BaseGrammar>(str))
-    .AddTypedEntitiesFactories()
+    .AddCommonGrammarFactories()
+    .AddAuthorityNameFactories()
+    .AddPartyNameFactories()
+    .AddLegalEntityNameFactories()
+    .AddPositionNameFactories()
+    .AddPersonNameFactories()
+    .AddCurrencyUnitsFactories()
+    .AddQuantityUnitsFactories()
+    .AddTimeUnitsFactories()
+    .AddPartUnitsFactories()
+
     ;
 
 

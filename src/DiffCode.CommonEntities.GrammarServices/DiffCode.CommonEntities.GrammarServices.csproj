@@ -6,15 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DiffCode.CommonEntities.Sources" Version="1.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\DiffCode.CommonEntities\src\DiffCode.CommonEntities\DiffCode.CommonEntities\DiffCode.CommonEntities.csproj" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Using Include="DiffCode.CommonEntities.GrammarServices.Constants" Static="true" />
+  </ItemGroup>
+  
 
 </Project>

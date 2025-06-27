@@ -13,11 +13,11 @@ internal readonly record struct CasedValue
     Case = @case;
     Gender = gen;
   }
-  public CasedValue(int val, GCase @case, Gender gen, Digits digits)
+  public CasedValue(int val, GCase @case, Gender gen, Enums.Digits digits)
   {
     Value = val;
     Case = @case;
-    Gender = (int)digits <= 0 ? gen : digits == Digits.Thousands ? Gender.F : Gender.M;
+    Gender = (int)digits <= 0 ? gen : digits == Enums.Digits.Thousands ? Gender.F : Gender.M;
   }
 
 
@@ -53,7 +53,8 @@ internal readonly record struct CasedValue
 
 
     (1, NOM or ACC, Gender.M) => "один",
-    (1, NOM or ACC, Gender.F) => "одна",
+    (1, NOM, Gender.F) => "одна",
+    (1, ACC, Gender.F) => "одну",
     (1, GEN, Gender.M) => "одного",
     (1, GEN, Gender.F) => "одной",
     (1, DAT, Gender.M) => "одному",
@@ -170,7 +171,15 @@ internal readonly record struct CasedValue
      > 50 and < 60 or
      > 60 and < 70 or
      > 70 and < 80 or
-     > 80 and < 90, NOM or ACC, _) => $"{New(Tens, NOM, Gender).Result} {New(Value - Tens, NOM, Gender).Result}",
+     > 80 and < 90, NOM, _) => $"{New(Tens, NOM, Gender).Result} {New(Value - Tens, NOM, Gender).Result}",
+
+    ( > 20 and < 30 or
+     > 30 and < 40 or
+     > 40 and < 50 or
+     > 50 and < 60 or
+     > 60 and < 70 or
+     > 70 and < 80 or
+     > 80 and < 90, ACC, _) => $"{New(Tens, ACC, Gender).Result} {New(Value - Tens, ACC, Gender).Result}",
 
     ( > 20 and < 30 or
      > 30 and < 40 or

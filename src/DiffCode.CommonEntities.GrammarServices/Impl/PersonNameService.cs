@@ -2,7 +2,7 @@
 using DiffCode.CommonEntities.Enums;
 using DiffCode.CommonEntities.Grammars;
 using DiffCode.CommonEntities.Persons;
-using DiffCode.CommonEntities.Sources;
+using DiffCode.CommonEntities.Services;
 using System.Text.RegularExpressions;
 using static DiffCode.CommonEntities.Abstractions.Case;
 
@@ -52,14 +52,55 @@ public class PersonNameService : IPersonNameService
     var strings = input.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
     var firstNameParts = MFirstParts.Concat(FFirstParts.Cast<BasePersonNamePart>());
     var midNameParts = MMidParts.Concat(FMidParts.Cast<BasePersonNamePart>());
+    var firstNameGrammars = MFirstGrammars.Concat(FFirstGrammars.Cast<BaseGrammar>());
 
     var foundFirstName = firstNameParts.FirstOrDefault(f => strings.Contains(f.Text));
-    var gender = foundFirstName.Gender;
+    var foundMidName = midNameParts.FirstOrDefault(f => strings.Contains(f.Text));
+
+
+    if(foundFirstName == null && foundMidName != null)
+    {
+      var foundFirstNameGrammar = firstNameGrammars.FirstOrDefault(f => f.Gender == foundMidName.Gender && strings.Any(s => Regex.IsMatch(s, $".?{f.End}$")));
+      var foundFirstNameString = strings.FirstOrDefault(s => Regex.IsMatch(s, $".?{foundFirstNameGrammar.End}$"));
+      //var firstName = new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar };
+
+      foundFirstName = foundFirstNameGrammar.Gender switch
+      {
+        Gender.M => new MFirstPart(foundFirstNameString, null, null) { Grammar = foundFirstNameGrammar },
+        Gender.F => new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar },
+
+        _ => throw new NotImplementedException(),
+      };
+
+      strings.Remove(foundFirstNameString);
+      strings.Remove(foundMidName.Text);
+
+      var lastNameString = string.Join(' ', strings);
+      var foundLastNameGram = GetGrammarForPersonNamePart(lastNameString, foundMidName.Gender, NamePart.LAST);
+      BaseLastNamePart foundLastNamePart = foundMidName.Gender switch
+      {
+        Gender.M => new MLastPart(lastNameString) with { Grammar = foundLastNameGram },
+        Gender.F => new FLastPart(lastNameString) with { Grammar = foundLastNameGram },
+        _ => throw new NotImplementedException()
+      };
+
+      BasePersonName result = foundMidName.Gender switch
+      {
+        Gender.F => new FPersonName(new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar }, (FMidPart)foundMidName, (FLastPart)foundLastNamePart),
+        Gender.M => new MPersonName(new MFirstPart(foundFirstNameString, null, null) { Grammar = foundFirstNameGrammar }, (MMidPart)foundMidName, (MLastPart)foundLastNamePart),
+      };
+
+
+    }
+
+
+
+    var gender = foundFirstName?.Gender ?? foundMidName.Gender;
 
     ret.Add(foundFirstName);
     strings.Remove(foundFirstName.Text);
 
-    var foundMidName = midNameParts.FirstOrDefault(f => strings.Contains(f.Text));
+    foundMidName ??= midNameParts.FirstOrDefault(f => strings.Contains(f.Text));
     ret.Add(foundMidName);
     strings.Remove(foundMidName.Text);
 
@@ -76,35 +117,123 @@ public class PersonNameService : IPersonNameService
     return ret;
   }
 
+
+
   /// <summary>
-  /// <inheritdoc/>
+  /// Найдено 1 пересечение с женским отчеством.
   /// </summary>
-  /// <param name="input"></param>
+  /// <param name="parserData"></param>
   /// <returns></returns>
-  /// <exception cref="NotImplementedException"></exception>
-  public BasePersonName GetPersonName(string input)
+  private ParserData WhenFMidNameFound(ParserData parserData, params BaseMidNamePart[] midNameParts)
   {
-    var personNameParts = GetPersonNameParts(input);
-    var firstNamePart = personNameParts.FirstOrDefault(f => f.Part == NamePart.FIRST);
-    var midNamePart = personNameParts.FirstOrDefault(f => f.Part == NamePart.MID);
-    var lastNamePart = personNameParts.FirstOrDefault(f => f.Part == NamePart.LAST);
+    parserData.MidNamePart = midNameParts[0];
+    parserData.CurrentFragments.Remove(parserData.MidNamePart.Text);
+    var firstNameGrammars = FFirstGrammars;
+    var foundFirstNameGrammar = firstNameGrammars.FirstOrDefault(f => f.Gender == parserData.Gender && parserData.CurrentFragments.Any(s => Regex.IsMatch(s, $".?{f.End}$")));
+    var foundFirstNameString = parserData.CurrentFragments.FirstOrDefault(s => Regex.IsMatch(s, $".?{foundFirstNameGrammar.End}$"));
+    parserData.FirstNamePart = new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar };
+    parserData.CurrentFragments.Remove(foundFirstNameString);
 
-    var gender = firstNamePart.Gender;
-
-    return gender switch
-    {
-      Gender.M => new MPersonName((MFirstPart)firstNamePart, (MMidPart)midNamePart, (MLastPart)lastNamePart),
-      Gender.F => new FPersonName((FFirstPart)firstNamePart, (FMidPart)midNamePart, (FLastPart)lastNamePart),
-      _ => throw new NotImplementedException()
-    };
+    return parserData;
   }
+
+
+  /// <summary>
+  /// Найдено 1 пересечение с мужским отчеством.
+  /// </summary>
+  /// <param name="parserData"></param>
+  /// <returns></returns>
+  private ParserData WhenMMidNameFound(ParserData parserData, params BaseMidNamePart[] midNameParts)
+  {
+    parserData.MidNamePart = midNameParts[0];
+    parserData.CurrentFragments.Remove(parserData.MidNamePart.Text);
+    var firstNameGrammars = MFirstGrammars;
+    var foundFirstNameGrammar = firstNameGrammars.FirstOrDefault(f => f.Gender == parserData.Gender && parserData.CurrentFragments.Any(s => Regex.IsMatch(s, $".?{f.End}$")));
+    var foundFirstNameString = parserData.CurrentFragments.FirstOrDefault(s => Regex.IsMatch(s, $".?{foundFirstNameGrammar.End}$"));
+    parserData.FirstNamePart = new MFirstPart(foundFirstNameString, null, null) { Grammar = foundFirstNameGrammar };
+    parserData.CurrentFragments.Remove(foundFirstNameString);
+
+    return parserData;
+  }
+
+
+  /// <summary>
+  /// Найдено 1 пересечение с мужским отчеством и 1 пересечение с женским отчеством.
+  /// </summary>
+  /// <param name="parserData"></param>
+  /// <returns></returns>
+  private ParserData WhenMMidNameFMidNameFound(ParserData parserData, params BaseMidNamePart[] midNameParts)
+  {
+    parserData.MidNamePart = midNameParts.FirstOrDefault(f => f.Gender == Gender.F);
+    parserData.CurrentFragments.Remove(parserData.MidNamePart.Text);
+    var firstNameGrammars = FFirstGrammars;
+    var foundFirstNameGrammar = firstNameGrammars.FirstOrDefault(f => f.Gender == parserData.Gender && parserData.CurrentFragments.Any(s => Regex.IsMatch(s, $".?{f.End}$")));
+    var foundFirstNameString = parserData.CurrentFragments.FirstOrDefault(s => Regex.IsMatch(s, $".?{foundFirstNameGrammar.End}$"));
+    parserData.FirstNamePart = new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar };
+    parserData.CurrentFragments.Remove(foundFirstNameString);
+
+
+    return parserData;
+  }
+
+
+  /// <summary>
+  /// Найдено 2 пересечения с мужскими отчествами.
+  /// </summary>
+  /// <param name="parserData"></param>
+  /// <returns></returns>
+  private ParserData WhenTwoMMidNamesFound(ParserData parserData, params BaseMidNamePart[] midNameParts)
+  {
+    if(!midNameParts.Any(a => parserData.InitialFragments[0] == a.Text))
+    {
+      parserData.MidNamePart = midNameParts.FirstOrDefault();
+    }
+    else
+    {
+      parserData.MidNamePart = midNameParts.LastOrDefault();
+    }
+
+    parserData.CurrentFragments.Remove(parserData.MidNamePart.Text);
+    var firstNameGrammars = MFirstGrammars;
+    var foundFirstNameGrammar = firstNameGrammars.FirstOrDefault(f => f.Gender == parserData.Gender && parserData.CurrentFragments.Any(s => Regex.IsMatch(s, $".?{f.End}$")));
+    var foundFirstNameString = parserData.CurrentFragments.FirstOrDefault(s => Regex.IsMatch(s, $".?{foundFirstNameGrammar.End}$"));
+    parserData.FirstNamePart = new MFirstPart(foundFirstNameString, null, null) { Grammar = foundFirstNameGrammar };
+    parserData.CurrentFragments.Remove(foundFirstNameString);
+
+
+    return parserData;
+  }
+
+
+  /// <summary>
+  /// Не найдено ни одного пересечения ни с одним отчеством.
+  /// </summary>
+  /// <param name="parserData"></param>
+  /// <returns></returns>
+  private ParserData WhenNoMidNamesFound(ParserData parserData)
+  {
+
+
+    return parserData;
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
   /// <summary>
   /// Предикат для поиска грамматики, соответствующей указанной строке. 
   /// </summary>
-  private Func<BaseGrammar, string, bool> GrammarGetter => (gr, txt) => Regex.IsMatch(txt, $".?{gr.Root}{gr[GCase.NOM]?.Text}$");
+  private Func<BaseGrammar, string, bool> GrammarGetter => (gr, txt) => Regex.IsMatch(txt, $".?{gr.End}$");
 
   /// <summary>
   /// Грамматики для мужских имен.
@@ -195,5 +324,69 @@ public class PersonNameService : IPersonNameService
     .Select(s => s with { Grammar = GetGrammarForPersonNamePart(s.Text, s.Gender, s.Part) })
     .ToList()
     ;
+
+
+
+
+
+
+
+
+
+  /// <summary>
+  /// Вспомогательная модель данных для парсера.
+  /// </summary>
+  private class ParserData
+  {
+
+
+    /// <summary>
+    /// Часть имени - личное имя, найденное в списке известных мужских/женских личных имен,
+    /// либо сформированное из соответствующей грамматики.
+    /// </summary>
+    public BaseFirstNamePart FirstNamePart { get; set; }
+
+    /// <summary>
+    /// Часть имени - отчество, найденное в списке известных мужских/женских отчеств,
+    /// либо сформированное из соответствующей грамматики.
+    /// </summary>
+    public BaseMidNamePart MidNamePart { get; set; }
+
+    /// <summary>
+    /// Часть имени - фамилия, сформированная из соответствующей грамматики.
+    /// </summary>
+    public BaseLastNamePart LastNamePart { get; set; }
+
+    /// <summary>
+    /// Гендерная принадлежность, извлеченная из личного имени/отчества.
+    /// </summary>
+    public Gender Gender => FirstNamePart?.Gender ?? MidNamePart?.Gender ?? Gender.N;
+
+    /// <summary>
+    /// Исходная строка, разбитая на массив подстрок через пробел.
+    /// </summary>
+    public List<string> InitialFragments { get; }
+
+    /// <summary>
+    /// Массив подстрок (<see cref="InitialFragments"/>), из которого последовательно удаляются
+    /// те или иные подстроки по мере их сопоставления с частями имен.
+    /// </summary>
+    public List<string> CurrentFragments { get; set; }
+
+    /// <summary>
+    /// ФИО, сформированное из личного имени, отчества и фамилии.
+    /// </summary>
+    public BasePersonName PersonName =>
+      FirstNamePart != null && MidNamePart != null && LastNamePart != null
+      ?
+      Gender switch
+      {
+        Gender.F => new FPersonName((FFirstPart)FirstNamePart, (FMidPart)MidNamePart, (FLastPart)LastNamePart),
+        Gender.M => new MPersonName((MFirstPart)FirstNamePart, (MMidPart)MidNamePart, (MLastPart)LastNamePart),
+        _ => null
+      }
+      : null;
+
+  }
 
 }
