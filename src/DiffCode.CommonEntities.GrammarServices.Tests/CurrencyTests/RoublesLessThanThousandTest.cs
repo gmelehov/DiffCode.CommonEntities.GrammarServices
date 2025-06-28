@@ -1,7 +1,7 @@
 ﻿using DiffCode.CommonEntities.Units.Currency;
 using System.Diagnostics;
 
-namespace DiffCode.CommonEntities.GrammarServices.Tests;
+namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректности представления прописью суммы,

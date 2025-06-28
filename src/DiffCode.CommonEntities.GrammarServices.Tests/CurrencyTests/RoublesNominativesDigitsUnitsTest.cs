@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 
-namespace DiffCode.CommonEntities.GrammarServices.Tests;
+namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректного согласования числительных и названий разрядов

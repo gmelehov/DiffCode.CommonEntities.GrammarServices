@@ -1,14 +1,14 @@
 ﻿using DiffCode.CommonEntities.Units.Currency;
 using System.Diagnostics;
 
-namespace DiffCode.CommonEntities.GrammarServices.Tests;
+namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректности представления прописью суммы,
 /// большей одного миллиона рублей.
 /// </summary>
 [TestClass]
-public class RoublesMoreThanMillionTests
+public class RoublesMoreThanMillionTest
 {
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
   private readonly IServiceProvider _sp;
@@ -22,7 +22,7 @@ public class RoublesMoreThanMillionTests
 
 
 
-  public RoublesMoreThanMillionTests()
+  public RoublesMoreThanMillionTest()
   {
     var scoll = new ServiceCollection()
       .AddAllGrammars()

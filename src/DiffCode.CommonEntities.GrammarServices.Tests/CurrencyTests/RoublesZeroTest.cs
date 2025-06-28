@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 
-namespace DiffCode.CommonEntities.GrammarServices.Tests;
+namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректности представления прописью нулевой суммы в рублях и копейках.
