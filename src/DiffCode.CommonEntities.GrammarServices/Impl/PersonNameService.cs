@@ -49,70 +49,61 @@ public class PersonNameService : IPersonNameService
   public IEnumerable<BasePersonNamePart> GetPersonNameParts(string input)
   {
     var ret = new List<BasePersonNamePart>();
-    var strings = input.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-    var firstNameParts = MFirstParts.Concat(FFirstParts.Cast<BasePersonNamePart>());
-    var midNameParts = MMidParts.Concat(FMidParts.Cast<BasePersonNamePart>());
-    var firstNameGrammars = MFirstGrammars.Concat(FFirstGrammars.Cast<BaseGrammar>());
+    var strings = input.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList().Index();
+    var midNameGrammars = MMidGrammars.Concat(FMidGrammars.Cast<BaseGrammar>());
 
-    var foundFirstName = firstNameParts.FirstOrDefault(f => strings.Contains(f.Text));
-    var foundMidName = midNameParts.FirstOrDefault(f => strings.Contains(f.Text));
+    var midNameGrammar = midNameGrammars.FirstOrDefault(f => strings.Any(s => Regex.IsMatch(s.Item, $".?{f.End}$")));
+    var midNameString = strings.FirstOrDefault(s => Regex.IsMatch(s.Item, $".?{midNameGrammar.End}$"));
 
+    string lastNameString;
+    string firstNameString;
+    BaseGrammar lastNameGrammar;
+    BaseGrammar firstNameGrammar;
+    BaseFirstNamePart firstNamePart;
+    BaseLastNamePart lastNamePart;
 
-    if(foundFirstName == null && foundMidName != null)
+    BaseMidNamePart foundMidName = midNameGrammar.Gender switch
     {
-      var foundFirstNameGrammar = firstNameGrammars.FirstOrDefault(f => f.Gender == foundMidName.Gender && strings.Any(s => Regex.IsMatch(s, $".?{f.End}$")));
-      var foundFirstNameString = strings.FirstOrDefault(s => Regex.IsMatch(s, $".?{foundFirstNameGrammar.End}$"));
-      //var firstName = new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar };
+      Gender.M => new MMidPart(null, midNameString.Item) { Grammar = midNameGrammar },
+      Gender.F => new FMidPart(null, midNameString.Item) { Grammar = midNameGrammar },
+      _ => throw new NotImplementedException(),
+    };
 
-      foundFirstName = foundFirstNameGrammar.Gender switch
-      {
-        Gender.M => new MFirstPart(foundFirstNameString, null, null) { Grammar = foundFirstNameGrammar },
-        Gender.F => new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar },
-
-        _ => throw new NotImplementedException(),
-      };
-
-      strings.Remove(foundFirstNameString);
-      strings.Remove(foundMidName.Text);
-
-      var lastNameString = string.Join(' ', strings);
-      var foundLastNameGram = GetGrammarForPersonNamePart(lastNameString, foundMidName.Gender, NamePart.LAST);
-      BaseLastNamePart foundLastNamePart = foundMidName.Gender switch
-      {
-        Gender.M => new MLastPart(lastNameString) with { Grammar = foundLastNameGram },
-        Gender.F => new FLastPart(lastNameString) with { Grammar = foundLastNameGram },
-        _ => throw new NotImplementedException()
-      };
-
-      BasePersonName result = foundMidName.Gender switch
-      {
-        Gender.F => new FPersonName(new FFirstPart(foundFirstNameString) { Grammar = foundFirstNameGrammar }, (FMidPart)foundMidName, (FLastPart)foundLastNamePart),
-        Gender.M => new MPersonName(new MFirstPart(foundFirstNameString, null, null) { Grammar = foundFirstNameGrammar }, (MMidPart)foundMidName, (MLastPart)foundLastNamePart),
-      };
-
-
-    }
-
-
-
-    var gender = foundFirstName?.Gender ?? foundMidName.Gender;
-
-    ret.Add(foundFirstName);
-    strings.Remove(foundFirstName.Text);
-
-    foundMidName ??= midNameParts.FirstOrDefault(f => strings.Contains(f.Text));
-    ret.Add(foundMidName);
-    strings.Remove(foundMidName.Text);
-
-    var lastName = string.Join(' ', strings);
-    var foundLastNameGrammar = GetGrammarForPersonNamePart(lastName, gender, NamePart.LAST);
-    BaseLastNamePart lastNamePart = gender switch
+    switch (midNameString.Index)
     {
-      Gender.M => new MLastPart(lastName) with { Grammar = foundLastNameGrammar },
-      Gender.F => new FLastPart(lastName) with { Grammar = foundLastNameGrammar },
+      case 1:
+        lastNameString = strings.FirstOrDefault(f => f.Index == 2).Item;
+        lastNameGrammar = GetGrammarForPersonNamePart(lastNameString, foundMidName.Gender, NamePart.LAST);
+        firstNameString = strings.FirstOrDefault(f => f.Index == 0).Item;
+        firstNameGrammar = GetGrammarForPersonNamePart(firstNameString, foundMidName.Gender, NamePart.FIRST);
+        break;
+
+      case 2:
+        lastNameString = strings.FirstOrDefault(f => f.Index == 0).Item;
+        lastNameGrammar = GetGrammarForPersonNamePart(lastNameString, foundMidName.Gender, NamePart.LAST);
+        firstNameString = strings.FirstOrDefault(f => f.Index == 1).Item;
+        firstNameGrammar = GetGrammarForPersonNamePart(firstNameString, foundMidName.Gender, NamePart.FIRST);
+        break;
+
+      default:
+        throw new NotImplementedException();
+    };
+
+    firstNamePart = foundMidName.Gender switch
+    {
+      Gender.M => new MFirstPart(firstNameString, null, null) { Grammar = firstNameGrammar },
+      Gender.F => new FFirstPart(firstNameString) { Grammar = firstNameGrammar },
+      _ => throw new NotImplementedException(),
+    };
+
+    lastNamePart = foundMidName.Gender switch
+    {
+      Gender.M => new MLastPart(lastNameString) with { Grammar = lastNameGrammar },
+      Gender.F => new FLastPart(lastNameString) with { Grammar = lastNameGrammar },
       _ => throw new NotImplementedException()
     };
-    ret.Add(lastNamePart);
+
+    ret.AddRange(firstNamePart, foundMidName, lastNamePart);
 
     return ret;
   }
@@ -324,6 +315,7 @@ public class PersonNameService : IPersonNameService
     .Select(s => s with { Grammar = GetGrammarForPersonNamePart(s.Text, s.Gender, s.Part) })
     .ToList()
     ;
+
 
 
 
