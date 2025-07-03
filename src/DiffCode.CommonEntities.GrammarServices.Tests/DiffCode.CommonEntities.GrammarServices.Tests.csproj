@@ -39,8 +39,8 @@
 
 
   <ItemGroup>
-    <Using Include="DiffCode.CommonEntities.GrammarServices.Extensions"/>
-    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <Using Include="DiffCode.CommonEntities.GrammarServices.Extensions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
 </Project>
