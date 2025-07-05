@@ -28,7 +28,7 @@ public class RoublesZeroTest
       .AddAllGrammars()
       ;
     _sp = scoll.BuildServiceProvider();
-    _rblFactory = _sp.GetService<Roubles.Factory>();
+    _rblFactory = _sp.GetRequiredService<Roubles.Factory>();
   }
 
 

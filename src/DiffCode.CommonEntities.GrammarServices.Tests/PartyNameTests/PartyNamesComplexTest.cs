@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace DiffCode.CommonEntities.GrammarServices.Tests;
+namespace DiffCode.CommonEntities.GrammarServices.Tests.PartyNameTests;
 
 /// <summary>
 /// Класс для тестирования корректности создания типизированного наименования стороны
@@ -27,7 +27,7 @@ public class PartyNamesComplexTest
       .AddAllGrammars()
       ;
     _sp = scoll.BuildServiceProvider();
-    _partyNameFactory = _sp.GetService<PartyName.Factory>();
+    _partyNameFactory = _sp.GetRequiredService<PartyName.Factory>();
   }
 
 
