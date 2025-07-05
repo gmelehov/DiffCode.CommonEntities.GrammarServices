@@ -1,7 +1,4 @@
-﻿using DiffCode.CommonEntities.Units.Currency;
-using System.Diagnostics;
-
-namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
+﻿namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректности представления прописью суммы,
@@ -18,6 +15,11 @@ public class RoublesLessThanThousandTest
 
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
   private Roubles _rbl;
+
+  /// <summary>
+  /// Исходное число, которое должно быть преобразовано в сумму в рублях и копейках.
+  /// </summary>
+  public const double testValue = 912.01;
 
 
 
@@ -44,7 +46,7 @@ public class RoublesLessThanThousandTest
   /// </remarks>
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   [TestMethod]
-  [DataRow(912.01)]
+  [DataRow(testValue)]
   public void Roubles_LessThanThousand_HasExpected_Value(double val)
   {
     _rbl = _rblFactory((decimal)val);
@@ -58,7 +60,7 @@ public class RoublesLessThanThousandTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в именительном падеже.</param>
   [TestMethod]
-  [DataRow(912.01, "девятьсот двенадцать рублей одна копейка")]
+  [DataRow(testValue, "девятьсот двенадцать рублей одна копейка")]
   public void Roubles_LessThanThousand_HasExpected_NomCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -72,7 +74,7 @@ public class RoublesLessThanThousandTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в родительном падеже.</param>
   [TestMethod]
-  [DataRow(912.01, "девятисот двенадцати рублей одной копейки")]
+  [DataRow(testValue, "девятисот двенадцати рублей одной копейки")]
   public void Roubles_LessThanThousand_HasExpected_GenCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -86,7 +88,7 @@ public class RoublesLessThanThousandTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в дательном падеже.</param>
   [TestMethod]
-  [DataRow(912.01, "девятистам двенадцати рублям одной копейке")]
+  [DataRow(testValue, "девятистам двенадцати рублям одной копейке")]
   public void Roubles_LessThanThousand_HasExpected_DatCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -100,7 +102,7 @@ public class RoublesLessThanThousandTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в винительном падеже.</param>
   [TestMethod]
-  [DataRow(912.01, "девятьсот двенадцать рублей одну копейку")]
+  [DataRow(testValue, "девятьсот двенадцать рублей одну копейку")]
   public void Roubles_LessThanThousand_HasExpected_AccCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -114,7 +116,7 @@ public class RoublesLessThanThousandTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в творительном падеже.</param>
   [TestMethod]
-  [DataRow(912.01, "девятьюстами двенадцатью рублями одной копейкой")]
+  [DataRow(testValue, "девятьюстами двенадцатью рублями одной копейкой")]
   public void Roubles_LessThanThousand_HasExpected_InsCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -128,7 +130,7 @@ public class RoublesLessThanThousandTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в предложном падеже.</param>
   [TestMethod]
-  [DataRow(912.01, "девятистах двенадцати рублях одной копейке")]
+  [DataRow(testValue, "девятистах двенадцати рублях одной копейке")]
   public void Roubles_LessThanThousand_HasExpected_LocCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);

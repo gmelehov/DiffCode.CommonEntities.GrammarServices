@@ -1,8 +1,4 @@
-﻿using DiffCode.CommonEntities.Units.Currency;
-using System.Diagnostics;
-
-
-namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
+﻿namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректного согласования числительных и названий разрядов
@@ -19,6 +15,12 @@ public class RoublesNominativesDigitsUnitsTest
 
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
   private Roubles _rbl;
+
+  /// <summary>
+  /// Исходное число, которое должно быть преобразовано в сумму в рублях и копейках.
+  /// </summary>
+  public const double testValue = 682351.32;
+
 
 
 
@@ -46,7 +48,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// </remarks>
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   [TestMethod]
-  [DataRow(682351.32)]
+  [DataRow(testValue)]
   public void Roubles_HasExpected_Value(double val)
   {
     _rbl = _rblFactory((decimal)val);
@@ -66,7 +68,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в именительном падеже.</param>
   [TestMethod]
-  [DataRow(682351.32, "шестьсот восемьдесят две тысячи триста пятьдесят один рубль тридцать две копейки")]
+  [DataRow(testValue, "шестьсот восемьдесят две тысячи триста пятьдесят один рубль тридцать две копейки")]
   public void Roubles_HasExpected_NomCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -86,7 +88,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в родительном падеже.</param>
   [TestMethod]
-  [DataRow(682351.32, "шестисот восьмидесяти двух тысяч трехсот пятидесяти одного рубля тридцати двух копеек")]
+  [DataRow(testValue, "шестисот восьмидесяти двух тысяч трехсот пятидесяти одного рубля тридцати двух копеек")]
   public void Roubles_HasExpected_GenCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -106,7 +108,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в дательном падеже.</param>
   [TestMethod]
-  [DataRow(682351.32, "шестистам восьмидесяти двум тысячам тремстам пятидесяти одному рублю тридцати двум копейкам")]
+  [DataRow(testValue, "шестистам восьмидесяти двум тысячам тремстам пятидесяти одному рублю тридцати двум копейкам")]
   public void Roubles_HasExpected_DatCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -126,7 +128,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в винительном падеже.</param>
   [TestMethod]
-  [DataRow(682351.32, "шестьсот восемьдесят две тысячи триста пятьдесят один рубль тридцать две копейки")]
+  [DataRow(testValue, "шестьсот восемьдесят две тысячи триста пятьдесят один рубль тридцать две копейки")]
   public void Roubles_HasExpected_AccCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -146,7 +148,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в творительном падеже.</param>
   [TestMethod]
-  [DataRow(682351.32, "шестьюстами восемьюдесятью двумя тысячами тремястами пятьюдесятью одним рублём тридцатью двумя копейками")]
+  [DataRow(testValue, "шестьюстами восемьюдесятью двумя тысячами тремястами пятьюдесятью одним рублём тридцатью двумя копейками")]
   public void Roubles_HasExpected_InsCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -166,7 +168,7 @@ public class RoublesNominativesDigitsUnitsTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в предложном падеже.</param>
   [TestMethod]
-  [DataRow(682351.32, "шестистах восьмидесяти двух тысячах трехстах пятидесяти одном рубле тридцати двух копейках")]
+  [DataRow(testValue, "шестистах восьмидесяти двух тысячах трехстах пятидесяти одном рубле тридцати двух копейках")]
   public void Roubles_HasExpected_LocCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);

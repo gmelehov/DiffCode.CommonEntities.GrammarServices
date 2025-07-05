@@ -1,8 +1,4 @@
-﻿using DiffCode.CommonEntities.Units.Currency;
-using System.Diagnostics;
-
-
-namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
+﻿namespace DiffCode.CommonEntities.GrammarServices.Tests.CurrencyTests;
 
 /// <summary>
 /// Класс для тестирования корректности представления прописью нулевой суммы в рублях и копейках.
@@ -18,6 +14,11 @@ public class RoublesZeroTest
 
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
   private Roubles _rbl;
+
+  /// <summary>
+  /// Исходное число, которое должно быть преобразовано в сумму в рублях и копейках.
+  /// </summary>
+  public const double testValue = 0.0;
 
 
 
@@ -43,7 +44,7 @@ public class RoublesZeroTest
   /// </remarks>
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   [TestMethod]
-  [DataRow(0.0)]
+  [DataRow(testValue)]
   public void Roubles_Zero_HasExpected_Value(double val)
   {
     _rbl = _rblFactory((decimal)val);
@@ -57,7 +58,7 @@ public class RoublesZeroTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в именительном падеже.</param>
   [TestMethod]
-  [DataRow(0.0, "ноль рублей ноль копеек")]
+  [DataRow(testValue, "ноль рублей ноль копеек")]
   public void Roubles_Zero_HasExpected_NomCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -71,7 +72,7 @@ public class RoublesZeroTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в родительном падеже.</param>
   [TestMethod]
-  [DataRow(0.0, "нуля рублей нуля копеек")]
+  [DataRow(testValue, "нуля рублей нуля копеек")]
   public void Roubles_Zero_HasExpected_GenCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -85,7 +86,7 @@ public class RoublesZeroTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в дательном падеже.</param>
   [TestMethod]
-  [DataRow(0.0, "нулю рублей нулю копеек")]
+  [DataRow(testValue, "нулю рублей нулю копеек")]
   public void Roubles_Zero_HasExpected_DatCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -99,7 +100,7 @@ public class RoublesZeroTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в винительном падеже.</param>
   [TestMethod]
-  [DataRow(0.0, "ноль рублей ноль копеек")]
+  [DataRow(testValue, "ноль рублей ноль копеек")]
   public void Roubles_Zero_HasExpected_AccCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -113,7 +114,7 @@ public class RoublesZeroTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в творительном падеже.</param>
   [TestMethod]
-  [DataRow(0.0, "нулем рублей нулем копеек")]
+  [DataRow(testValue, "нулем рублей нулем копеек")]
   public void Roubles_Zero_HasExpected_InsCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);
@@ -127,7 +128,7 @@ public class RoublesZeroTest
   /// <param name="val">Ожидаемое количество в рублях и копейках.</param>
   /// <param name="text">Ожидаемый текст прописью, в предложном падеже.</param>
   [TestMethod]
-  [DataRow(0.0, "нуле рублей нуле копеек")]
+  [DataRow(testValue, "нуле рублей нуле копеек")]
   public void Roubles_Zero_HasExpected_LocCase(double val, string text)
   {
     _rbl = _rblFactory((decimal)val);

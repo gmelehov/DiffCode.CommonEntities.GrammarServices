@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace DiffCode.CommonEntities.GrammarServices.Tests.PartyNameTests;
+﻿namespace DiffCode.CommonEntities.GrammarServices.Tests.PartyNameTests;
 
 /// <summary>
 /// Класс для тестирования корректности создания типизированного наименования стороны
@@ -17,6 +15,12 @@ public class PartyNamesComplexTest
 
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
   private PartyName _partyName;
+
+  /// <summary>
+  /// Исходная строка с составным наименованием стороны.
+  /// </summary>
+  public const string testValue = "управляющая компания";
+
 
 
 
@@ -40,7 +44,7 @@ public class PartyNamesComplexTest
   /// <param name="srcText">Исходная строка с названием стороны.</param>
   /// <param name="casedText">Ожидаемый текст, в именительном падеже.</param>
   [TestMethod]
-  [DataRow("управляющая компания", "Управляющая Компания")]
+  [DataRow(testValue, "Управляющая Компания")]
   public void PartyNames_Complex_HasExpected_NomCase(string srcText, string casedText)
   {
     _partyName = _partyNameFactory(srcText);
@@ -54,7 +58,7 @@ public class PartyNamesComplexTest
   /// <param name="srcText">Исходная строка с названием стороны.</param>
   /// <param name="casedText">Ожидаемый текст, в родительном падеже.</param>
   [TestMethod]
-  [DataRow("управляющая компания", "Управляющей Компании")]
+  [DataRow(testValue, "Управляющей Компании")]
   public void PartyNames_Complex_HasExpected_GenCase(string srcText, string casedText)
   {
     _partyName = _partyNameFactory(srcText);
@@ -68,7 +72,7 @@ public class PartyNamesComplexTest
   /// <param name="srcText">Исходная строка с названием стороны.</param>
   /// <param name="casedText">Ожидаемый текст, в дательном падеже.</param>
   [TestMethod]
-  [DataRow("управляющая компания", "Управляющей Компании")]
+  [DataRow(testValue, "Управляющей Компании")]
   public void PartyNames_Complex_HasExpected_DatCase(string srcText, string casedText)
   {
     _partyName = _partyNameFactory(srcText);
@@ -82,7 +86,7 @@ public class PartyNamesComplexTest
   /// <param name="srcText">Исходная строка с названием стороны.</param>
   /// <param name="casedText">Ожидаемый текст, в винительном падеже.</param>
   [TestMethod]
-  [DataRow("управляющая компания", "Управляющую Компанию")]
+  [DataRow(testValue, "Управляющую Компанию")]
   public void PartyNames_Complex_HasExpected_AccCase(string srcText, string casedText)
   {
     _partyName = _partyNameFactory(srcText);
@@ -96,7 +100,7 @@ public class PartyNamesComplexTest
   /// <param name="srcText">Исходная строка с названием стороны.</param>
   /// <param name="casedText">Ожидаемый текст, в творительном падеже.</param>
   [TestMethod]
-  [DataRow("управляющая компания", "Управляющей Компанией")]
+  [DataRow(testValue, "Управляющей Компанией")]
   public void PartyNames_Complex_HasExpected_InsCase(string srcText, string casedText)
   {
     _partyName = _partyNameFactory(srcText);
@@ -110,7 +114,7 @@ public class PartyNamesComplexTest
   /// <param name="srcText">Исходная строка с названием стороны.</param>
   /// <param name="casedText">Ожидаемый текст, в предложном падеже.</param>
   [TestMethod]
-  [DataRow("управляющая компания", "Управляющей Компании")]
+  [DataRow(testValue, "Управляющей Компании")]
   public void PartyNames_Complex_HasExpected_LocCase(string srcText, string casedText)
   {
     _partyName = _partyNameFactory(srcText);

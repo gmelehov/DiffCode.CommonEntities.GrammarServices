@@ -2,14 +2,15 @@
 
 /// <summary>
 /// Класс для тестирования корректности создания моделей личных данных
-/// из исходных строк, содержащих общеупотребительные мужские и женские имена, отчества и фамилии.
+/// из исходных строк, содержащих выдуманные мужские и женские имена, отчества и фамилии.
 /// </summary>
 /// <remarks>
-/// Цель - проверить корректность работы библиотеки со встроенными (общеупотребительными) мужскими 
-/// и женскими именами, отчествами и фамилиями.
+/// Цель - проверить корректность работы библиотеки с выдуманными (несуществующими) мужскими
+/// и женскими именами, отчествами и фамилиями, которые при этом подчиняются общим правилам 
+/// склонения по грамматическим падежам.
 /// </remarks>
 [TestClass]
-public class PersonNamesRealTest
+public class PersonNamesFakeTest
 {
   [DebuggerBrowsable(DebuggerBrowsableState.Never)]
   private readonly IServiceProvider _sp;
@@ -25,30 +26,30 @@ public class PersonNamesRealTest
   /// <summary>
   /// Исходная строка с фамилией, именем и отчеством в формате "ФАМИЛИЯ-ИМЯ-ОТЧЕСТВО".
   /// </summary>
-  public const string fRealNameLFM = "Каневская Зинаида Матвеевна";
+  public const string fFakeNameLFM = "Кенгурого Кузязя Хетшепсутовна";
 
   /// <summary>
   /// Исходная строка с фамилией, именем и отчеством в формате "ИМЯ-ОТЧЕСТВО-ФАМИЛИЯ".
   /// </summary>
-  public const string fRealNameFML = "Зинаида Матвеевна Каневская";
+  public const string fFakeNameFML = "Кузязя Хетшепсутовна Кенгурого";
 
   /// <summary>
   /// Ожидаемое текстовое представление фамилии, созданной из исходной строки 
-  /// <see cref="fRealNameFML"/>/<see cref="fRealNameLFM"/>.
+  /// <see cref="fFakeNameFML"/>/<see cref="fFakeNameLFM"/>.
   /// </summary>
-  public const string fRealLastName = "Каневская";
+  public const string fFakeLastName = "Кенгурого";
 
   /// <summary>
   /// Ожидаемое текстовое представление отчества, созданного из исходной строки 
-  /// <see cref="fRealNameFML"/>/<see cref="fRealNameLFM"/>.
+  /// <see cref="fFakeNameFML"/>/<see cref="fFakeNameLFM"/>.
   /// </summary>
-  public const string fRealMidName = "Матвеевна";
+  public const string fFakeMidName = "Хетшепсутовна";
 
   /// <summary>
   /// Ожидаемое текстовое представление имени, созданного из исходной строки 
-  /// <see cref="fRealNameFML"/>/<see cref="fRealNameLFM"/>.
+  /// <see cref="fFakeNameFML"/>/<see cref="fFakeNameLFM"/>.
   /// </summary>
-  public const string fRealFirstName = "Зинаида";
+  public const string fFakeFirstName = "Кузязя";
 
 
   #endregion
@@ -60,30 +61,30 @@ public class PersonNamesRealTest
   /// <summary>
   /// Исходная строка с фамилией, именем и отчеством в формате "ФАМИЛИЯ-ИМЯ-ОТЧЕСТВО".
   /// </summary>
-  public const string mRealNameLFM = "Андрейченко Ипполит Васильевич";
+  public const string mFakeNameLFM = "Алигагатор Мавсикакий Оладьевич";
 
   /// <summary>
   /// Исходная строка с фамилией, именем и отчеством в формате "ИМЯ-ОТЧЕСТВО-ФАМИЛИЯ".
   /// </summary>
-  public const string mRealNameFML = "Ипполит Васильевич Андрейченко";
+  public const string mFakeNameFML = "Мавсикакий Оладьевич Алигагатор";
 
   /// <summary>
   /// Ожидаемое текстовое представление фамилии, созданной из исходной строки 
-  /// <see cref="mRealNameFML"/>/<see cref="mRealNameLFM"/>.
+  /// <see cref="mFakeNameFML"/>/<see cref="mFakeNameLFM"/>.
   /// </summary>
-  public const string mRealLastName = "Андрейченко";
+  public const string mFakeLastName = "Алигагатор";
 
   /// <summary>
   /// Ожидаемое текстовое представление отчества, созданного из исходной строки 
-  /// <see cref="mRealNameFML"/>/<see cref="mRealNameLFM"/>.
+  /// <see cref="mFakeNameFML"/>/<see cref="mFakeNameLFM"/>.
   /// </summary>
-  public const string mRealMidName = "Васильевич";
+  public const string mFakeMidName = "Оладьевич";
 
   /// <summary>
   /// Ожидаемое текстовое представление имени, созданного из исходной строки 
-  /// <see cref="mRealNameFML"/>/<see cref="mRealNameLFM"/>.
+  /// <see cref="mFakeNameFML"/>/<see cref="mFakeNameLFM"/>.
   /// </summary>
-  public const string mRealFirstName = "Ипполит";
+  public const string mFakeFirstName = "Мавсикакий";
 
 
   #endregion
@@ -92,7 +93,7 @@ public class PersonNamesRealTest
 
 
 
-  public PersonNamesRealTest()
+  public PersonNamesFakeTest()
   {
     var scoll = new ServiceCollection()
       .AddAllGrammars()
@@ -116,8 +117,8 @@ public class PersonNamesRealTest
   /// <param name="srcTextLFM">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="srcTextFML">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, fRealNameFML)]
-  public void PersonNames_FReal_LFM_Equals_FML(string srcTextLFM, string srcTextFML)
+  [DataRow(fFakeNameLFM, fFakeNameFML)]
+  public void PersonNames_FFake_LFM_Equals_FML(string srcTextLFM, string srcTextFML)
   {
     var personNameLFM = _personNameFactory(srcTextLFM);
     var personNameFML = _personNameFactory(srcTextFML);
@@ -137,8 +138,8 @@ public class PersonNamesRealTest
   /// <param name="srcTextLFM">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="srcTextFML">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, mRealNameFML)]
-  public void PersonNames_MReal_LFM_Equals_FML(string srcTextLFM, string srcTextFML)
+  [DataRow(mFakeNameLFM, mFakeNameFML)]
+  public void PersonNames_MFake_LFM_Equals_FML(string srcTextLFM, string srcTextFML)
   {
     var personNameLFM = _personNameFactory(srcTextLFM);
     var personNameFML = _personNameFactory(srcTextFML);
@@ -156,8 +157,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(fRealNameLFM)]
-  public void PersonNames_FRealLFM_HasExpected_Gender(string srcText)
+  [DataRow(fFakeNameLFM)]
+  public void PersonNames_FFakeLFM_HasExpected_Gender(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(Gender.F, personName.Gender);
@@ -170,8 +171,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(fRealNameLFM)]
-  public void PersonNames_FRealLFM_Has_LastName(string srcText)
+  [DataRow(fFakeNameLFM)]
+  public void PersonNames_FFakeLFM_Has_LastName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.LastName);
@@ -185,8 +186,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="lastName">Ожидаемое текстовое представление фамилии, созданной из исходной строки.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, fRealLastName)]
-  public void PersonNames_FRealLFM_HasExpected_LastName(string srcText, string lastName)
+  [DataRow(fFakeNameLFM, fFakeLastName)]
+  public void PersonNames_FFakeLFM_HasExpected_LastName(string srcText, string lastName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(lastName, personName.LastName.Text);
@@ -199,8 +200,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(fRealNameLFM)]
-  public void PersonNames_FRealLFM_Has_FirstName(string srcText)
+  [DataRow(fFakeNameLFM)]
+  public void PersonNames_FFakeLFM_Has_FirstName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.FirstName);
@@ -214,8 +215,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="firstName">Ожидаемое текстовое представление имени, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, fRealFirstName)]
-  public void PersonNames_FRealLFM_HasExpected_FirstName(string srcText, string firstName)
+  [DataRow(fFakeNameLFM, fFakeFirstName)]
+  public void PersonNames_FFakeLFM_HasExpected_FirstName(string srcText, string firstName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(firstName, personName.FirstName.Text);
@@ -228,8 +229,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(fRealNameLFM)]
-  public void PersonNames_FRealLFM_Has_MidName(string srcText)
+  [DataRow(fFakeNameLFM)]
+  public void PersonNames_FFakeLFM_Has_MidName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.MidName);
@@ -243,8 +244,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="midName">Ожидаемое текстовое представление отчества, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, fRealMidName)]
-  public void PersonNames_FRealLFM_HasExpected_MidName(string srcText, string midName)
+  [DataRow(fFakeNameLFM, fFakeMidName)]
+  public void PersonNames_FFakeLFM_HasExpected_MidName(string srcText, string midName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(midName, personName.MidName.Text);
@@ -257,8 +258,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в именительном падеже.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, "Каневская Зинаида Матвеевна")]
-  public void PersonNames_FReal_HasExpected_NomCase(string srcText, string caseText)
+  [DataRow(fFakeNameLFM, "Кенгурого Кузязя Хетшепсутовна")]
+  public void PersonNames_FFake_HasExpected_NomCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Nom);
@@ -271,8 +272,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в родительном падеже.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, "Каневской Зинаиды Матвеевны")]
-  public void PersonNames_FReal_HasExpected_GenCase(string srcText, string caseText)
+  [DataRow(fFakeNameLFM, "Кенгурого Кузязи Хетшепсутовны")]
+  public void PersonNames_FFake_HasExpected_GenCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Gen);
@@ -285,8 +286,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в дательном падеже.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, "Каневской Зинаиде Матвеевне")]
-  public void PersonNames_FReal_HasExpected_DatCase(string srcText, string caseText)
+  [DataRow(fFakeNameLFM, "Кенгурого Кузязе Хетшепсутовне")]
+  public void PersonNames_FFake_HasExpected_DatCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Dat);
@@ -299,8 +300,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в винительном падеже.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, "Каневскую Зинаиду Матвеевну")]
-  public void PersonNames_FReal_HasExpected_AccCase(string srcText, string caseText)
+  [DataRow(fFakeNameLFM, "Кенгурого Кузязю Хетшепсутовну")]
+  public void PersonNames_FFake_HasExpected_AccCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Acc);
@@ -313,8 +314,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в творительном падеже.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, "Каневской Зинаидой Матвеевной")]
-  public void PersonNames_FReal_HasExpected_InsCase(string srcText, string caseText)
+  [DataRow(fFakeNameLFM, "Кенгурого Кузязей Хетшепсутовной")]
+  public void PersonNames_FFake_HasExpected_InsCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Ins);
@@ -327,13 +328,12 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в предложном падеже.</param>
   [TestMethod]
-  [DataRow(fRealNameLFM, "Каневской Зинаиде Матвеевне")]
-  public void PersonNames_FReal_HasExpected_LocCase(string srcText, string caseText)
+  [DataRow(fFakeNameLFM, "Кенгурого Кузязе Хетшепсутовне")]
+  public void PersonNames_FFake_HasExpected_LocCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Loc);
   }
-
 
   #endregion
 
@@ -348,8 +348,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(fRealNameFML)]
-  public void PersonNames_FRealFML_HasExpected_Gender(string srcText)
+  [DataRow(fFakeNameFML)]
+  public void PersonNames_FFakeFML_HasExpected_Gender(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(Gender.F, personName.Gender);
@@ -362,8 +362,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(fRealNameFML)]
-  public void PersonNames_FRealFML_Has_LastName(string srcText)
+  [DataRow(fFakeNameFML)]
+  public void PersonNames_FFakeFML_Has_LastName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.LastName);
@@ -377,8 +377,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   /// <param name="lastName">Ожидаемое текстовое представление фамилии, созданной из исходной строки.</param>
   [TestMethod]
-  [DataRow(fRealNameFML, fRealLastName)]
-  public void PersonNames_FRealFML_HasExpected_LastName(string srcText, string lastName)
+  [DataRow(fFakeNameFML, fFakeLastName)]
+  public void PersonNames_FFakeFML_HasExpected_LastName(string srcText, string lastName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(lastName, personName.LastName.Text);
@@ -391,8 +391,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(fRealNameFML)]
-  public void PersonNames_FRealFML_Has_FirstName(string srcText)
+  [DataRow(fFakeNameFML)]
+  public void PersonNames_FFakeFML_Has_FirstName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.FirstName);
@@ -406,8 +406,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   /// <param name="firstName">Ожидаемое текстовое представление имени, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(fRealNameFML, fRealFirstName)]
-  public void PersonNames_FRealFML_HasExpected_FirstName(string srcText, string firstName)
+  [DataRow(fFakeNameFML, fFakeFirstName)]
+  public void PersonNames_FFakeFML_HasExpected_FirstName(string srcText, string firstName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(firstName, personName.FirstName.Text);
@@ -420,8 +420,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(fRealNameFML)]
-  public void PersonNames_FRealFML_Has_MidName(string srcText)
+  [DataRow(fFakeNameFML)]
+  public void PersonNames_FFakeFML_Has_MidName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.MidName);
@@ -435,8 +435,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   /// <param name="midName">Ожидаемое текстовое представление отчества, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(fRealNameFML, fRealMidName)]
-  public void PersonNames_FRealFML_HasExpected_MidName(string srcText, string midName)
+  [DataRow(fFakeNameFML, fFakeMidName)]
+  public void PersonNames_FFakeFML_HasExpected_MidName(string srcText, string midName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(midName, personName.MidName.Text);
@@ -455,8 +455,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(mRealNameLFM)]
-  public void PersonNames_MRealLFM_HasExpected_Gender(string srcText)
+  [DataRow(mFakeNameLFM)]
+  public void PersonNames_MFakeLFM_HasExpected_Gender(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(Gender.M, personName.Gender);
@@ -469,8 +469,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(mRealNameLFM)]
-  public void PersonNames_MRealLFM_Has_LastName(string srcText)
+  [DataRow(mFakeNameLFM)]
+  public void PersonNames_MFakeLFM_Has_LastName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.LastName);
@@ -484,8 +484,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="lastName">Ожидаемое текстовое представление фамилии, созданной из исходной строки.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, mRealLastName)]
-  public void PersonNames_MRealLFM_HasExpected_LastName(string srcText, string lastName)
+  [DataRow(mFakeNameLFM, mFakeLastName)]
+  public void PersonNames_MFakeLFM_HasExpected_LastName(string srcText, string lastName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(lastName, personName.LastName.Text);
@@ -498,8 +498,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(mRealNameLFM)]
-  public void PersonNames_MRealLFM_Has_FirstName(string srcText)
+  [DataRow(mFakeNameLFM)]
+  public void PersonNames_MFakeLFM_Has_FirstName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.FirstName);
@@ -513,8 +513,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="firstName">Ожидаемое текстовое представление имени, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, mRealFirstName)]
-  public void PersonNames_MRealLFM_HasExpected_FirstName(string srcText, string firstName)
+  [DataRow(mFakeNameLFM, mFakeFirstName)]
+  public void PersonNames_MFakeLFM_HasExpected_FirstName(string srcText, string firstName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(firstName, personName.FirstName.Text);
@@ -527,8 +527,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   [TestMethod]
-  [DataRow(mRealNameLFM)]
-  public void PersonNames_MRealLFM_Has_MidName(string srcText)
+  [DataRow(mFakeNameLFM)]
+  public void PersonNames_MFakeLFM_Has_MidName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.MidName);
@@ -542,8 +542,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ФИО".</param>
   /// <param name="midName">Ожидаемое текстовое представление отчества, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, mRealMidName)]
-  public void PersonNames_MRealLFM_HasExpected_MidName(string srcText, string midName)
+  [DataRow(mFakeNameLFM, mFakeMidName)]
+  public void PersonNames_MFakeLFM_HasExpected_MidName(string srcText, string midName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(midName, personName.MidName.Text);
@@ -556,8 +556,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в именительном падеже.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, "Андрейченко Ипполит Васильевич")]
-  public void PersonNames_MReal_HasExpected_NomCase(string srcText, string caseText)
+  [DataRow(mFakeNameLFM, "Алигагатор Мавсикакий Оладьевич")]
+  public void PersonNames_MFake_HasExpected_NomCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Nom);
@@ -570,8 +570,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в родительном падеже.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, "Андрейченко Ипполита Васильевича")]
-  public void PersonNames_MReal_HasExpected_GenCase(string srcText, string caseText)
+  [DataRow(mFakeNameLFM, "Алигагатора Мавсикакия Оладьевича")]
+  public void PersonNames_MFake_HasExpected_GenCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Gen);
@@ -584,8 +584,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в дательном падеже.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, "Андрейченко Ипполиту Васильевичу")]
-  public void PersonNames_MReal_HasExpected_DatCase(string srcText, string caseText)
+  [DataRow(mFakeNameLFM, "Алигагатору Мавсикакию Оладьевичу")]
+  public void PersonNames_MFake_HasExpected_DatCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Dat);
@@ -598,8 +598,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в винительном падеже.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, "Андрейченко Ипполита Васильевича")]
-  public void PersonNames_MReal_HasExpected_AccCase(string srcText, string caseText)
+  [DataRow(mFakeNameLFM, "Алигагатора Мавсикакия Оладьевича")]
+  public void PersonNames_MFake_HasExpected_AccCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Acc);
@@ -612,8 +612,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в творительном падеже.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, "Андрейченко Ипполитом Васильевичем")]
-  public void PersonNames_MReal_HasExpected_InsCase(string srcText, string caseText)
+  [DataRow(mFakeNameLFM, "Алигагатором Мавсикакием Оладьевичем")]
+  public void PersonNames_MFake_HasExpected_InsCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Ins);
@@ -626,8 +626,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством.</param>
   /// <param name="caseText">Ожидаемое полное представление ФИО в предложном падеже.</param>
   [TestMethod]
-  [DataRow(mRealNameLFM, "Андрейченко Ипполите Васильевиче")]
-  public void PersonNames_MReal_HasExpected_LocCase(string srcText, string caseText)
+  [DataRow(mFakeNameLFM, "Алигагаторе Мавсикакии Оладьевиче")]
+  public void PersonNames_MFake_HasExpected_LocCase(string srcText, string caseText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(caseText, personName.Loc);
@@ -646,8 +646,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(mRealNameFML)]
-  public void PersonNames_MRealFML_HasExpected_Gender(string srcText)
+  [DataRow(mFakeNameFML)]
+  public void PersonNames_MFakeFML_HasExpected_Gender(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(Gender.M, personName.Gender);
@@ -660,8 +660,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(mRealNameFML)]
-  public void PersonNames_MRealFML_Has_LastName(string srcText)
+  [DataRow(mFakeNameFML)]
+  public void PersonNames_MFakeFML_Has_LastName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.LastName);
@@ -675,8 +675,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   /// <param name="lastName">Ожидаемое текстовое представление фамилии, созданной из исходной строки.</param>
   [TestMethod]
-  [DataRow(mRealNameFML, mRealLastName)]
-  public void PersonNames_MRealFML_HasExpected_LastName(string srcText, string lastName)
+  [DataRow(mFakeNameFML, mFakeLastName)]
+  public void PersonNames_MFakeFML_HasExpected_LastName(string srcText, string lastName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(lastName, personName.LastName.Text);
@@ -689,8 +689,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(mRealNameFML)]
-  public void PersonNames_MRealFML_Has_FirstName(string srcText)
+  [DataRow(mFakeNameFML)]
+  public void PersonNames_MFakeFML_Has_FirstName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.FirstName);
@@ -704,8 +704,8 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   /// <param name="firstName">Ожидаемое текстовое представление имени, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(mRealNameFML, mRealFirstName)]
-  public void PersonNames_MRealFML_HasExpected_FirstName(string srcText, string firstName)
+  [DataRow(mFakeNameFML, mFakeFirstName)]
+  public void PersonNames_MFakeFML_HasExpected_FirstName(string srcText, string firstName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(firstName, personName.FirstName.Text);
@@ -718,8 +718,8 @@ public class PersonNamesRealTest
   /// </summary>
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   [TestMethod]
-  [DataRow(mRealNameFML)]
-  public void PersonNames_MRealFML_Has_MidName(string srcText)
+  [DataRow(mFakeNameFML)]
+  public void PersonNames_MFakeFML_Has_MidName(string srcText)
   {
     var personName = _personNameFactory(srcText);
     Assert.IsNotNull(personName.MidName);
@@ -733,13 +733,12 @@ public class PersonNamesRealTest
   /// <param name="srcText">Исходная строка с именем, фамилией и отчеством, по схеме "ИОФ".</param>
   /// <param name="midName">Ожидаемое текстовое представление отчества, созданного из исходной строки.</param>
   [TestMethod]
-  [DataRow(mRealNameFML, mRealMidName)]
-  public void PersonNames_MRealFML_HasExpected_MidName(string srcText, string midName)
+  [DataRow(mFakeNameFML, mFakeMidName)]
+  public void PersonNames_MFakeFML_HasExpected_MidName(string srcText, string midName)
   {
     var personName = _personNameFactory(srcText);
     Assert.AreEqual(midName, personName.MidName.Text);
   }
 
   #endregion
-
 }
